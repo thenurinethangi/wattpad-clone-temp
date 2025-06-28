@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Chapter: ' + ${chapter.title}">Chapter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: #fff;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 12px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px;
+            color: #666;
+        }
+
+        .story-info {
+            flex: 1;
+        }
+
+        .story-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .story-author {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .header-btn {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .header-btn:hover {
+            background: #e55a2b;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .chapter-header {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .chapter-cover {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .chapter-title {
+            color: #333;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .chapter-stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 50;
+        }
+
+        .sidebar-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-btn:hover {
+            background: #f8f8f8;
+            transform: scale(1.05);
+        }
+
+        .paragraph {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .paragraph > p{
+            font-size: 15px;
+            line-height: 1.8;
+            /*margin-bottom: 30px;*/
+        }
+
+        .chapter-content {
+            padding: 40px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .chapter-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .chapter-text p {
+            margin-bottom: 20px;
+        }
+
+        .chapter-text .dialogue {
+            font-style: italic;
+            color: #555;
+        }
+
+        .chapter-text .pov-indicator {
+            font-weight: 600;
+            color: #ff6b35;
+            margin: 30px 0 20px 0;
+            text-align: center;
+        }
+
+        .chapter-footer {
+            padding: 40px;
+            text-align: center;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .continue-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .continue-btn:hover {
+            background: #555;
+        }
+
+        .chapter-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-btn:hover {
+            color: #ff6b35;
+        }
+
+        .social-share {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .facebook { background: #4267B2; }
+        .twitter { background: #1DA1F2; }
+        .pinterest { background: #BD081C; }
+        .tumblr { background: #001935; }
+        .embed { background: #666; }
+
+        .comments-section {
+            background: #f9f9f9;
+            padding: 30px 40px;
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 20px;
+        }
+
+        .comment {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ddd;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .comment-text {
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .comment-meta {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .comment-action {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .chapter-content {
+                padding: 20px;
+            }
+
+            .chapter-header {
+                padding: 20px;
+            }
+
+            .chapter-title {
+                font-size: 24px;
+            }
+
+            .chapter-text {
+                font-size: 16px;
+            }
+
+            .comments-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="header-content">
+        <button class="back-btn">←</button>
+        <div class="story-info">
+            <div class="story-title" th:text="${chapter.story.title}">Story Title</div>
+            <div class="story-author" th:text="'by ' + ${chapter.story.user.username}">by Author</div>
+        </div>
+        <div class="header-actions">
+            <button class="header-btn">+ Add</button>
+            <button class="header-btn">★ Vote</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="chapter-header">
+        <img th:if="${chapter.coverImage != null and !#strings.isEmpty(chapter.coverImage)}"
+             th:src="${chapter.coverImage}"
+             src="https://unsplash.com/photos/a-palm-tree-in-the-middle-of-a-desert-vtanmv3S-H4"
+             alt="Chapter Cover"
+             class="chapter-cover">
+
+        <h1 class="chapter-title" th:text="${chapter.title}">Chapter Title</h1>
+
+        <div class="chapter-stats">
+            <div class="stat-item">
+                <span>👁</span>
+                <span>0</span>
+            </div>
+            <div class="stat-item">
+                <span>⭐</span>
+                <span>0</span>
+            </div>
+            <div class="stat-item">
+                <span>💬</span>
+                <span>0</span>
+            </div>
+        </div>
+
+        <div class="author-info">
+            <img src="https://unsplash.com/photos/silhouette-of-trees-6dkoR1b4nt0"
+                 alt="Author"
+                 class="author-avatar">
+            <span th:text="'by ' + ${chapter.story.user.username}">by Author</span>
+        </div>
+    </div>
+
+<!--    <h1 class="chapter-title" th:text="${chapter.title}">Chapter Title</h1>-->
+
+    <div th:if="${paragraphs != null and !paragraphs.isEmpty()}">
+        <div th:each="para : ${paragraphs}">
+            <p class="paragraph" th:text="${para.content}">Sample paragraph.</p>
+        </div>
+    </div>
+
+    <div th:unless="${paragraphs != null and !paragraphs.isEmpty()}">
+        <p><i>No paragraphs found for this chapter.</i></p>
+    </div>
+</div>
+</body>
+</html>

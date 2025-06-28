@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wattpad - Where stories live</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+
+        .logo::before {
+            content: "W";
+            background: #FF6B35;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #FF6B35;
+        }
+
+        .search-container {
+            position: relative;
+            margin: 0 2rem;
+        }
+
+        .search-input {
+            padding: 0.5rem 1rem;
+            border: 2px solid #eee;
+            border-radius: 25px;
+            width: 300px;
+            outline: none;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #FF6B35;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #e55a2b;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            padding: 8rem 2rem 4rem;
+            margin-top: 80px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60%;
+            height: 100%;
+            background: #FF6B35;
+            border-radius: 50% 0 0 50%;
+            z-index: 1;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            color: #FF6B35;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content .stats {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .hero-image {
+            position: relative;
+            z-index: 3;
+        }
+
+        .device-mockup {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 20px;
+        }
+
+        /* Story Path Section */
+        .story-path {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 3rem;
+        }
+
+        .path-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .path-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .path-icon {
+            width: 60px;
+            height: 60px;
+            background: #FF6B35;
+            border-radius: 10px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .path-card h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        /* Studios Section */
+        .studios-section {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .studios-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .studios-text h2 {
+            color: #FF6B35;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .studios-text h3 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 2rem;
+        }
+
+        .studios-text p {
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .partner-logos {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            margin-top: 2rem;
+        }
+
+        .partner-logo {
+            height: 40px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .partner-logo:hover {
+            opacity: 1;
+        }
+
+        .studios-visual {
+            position: relative;
+        }
+
+        .movie-poster {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        /* Books Section */
+        .books-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .books-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .book-covers {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .book-cover {
+            width: 150px;
+            height: 220px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: rotate(-5deg);
+        }
+
+        .book-cover:nth-child(2) {
+            transform: rotate(5deg);
+            margin-top: -20px;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .step h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .step p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Testimonial */
+        .testimonial {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .testimonial-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .testimonial-book {
+            width: 100%;
+            max-width: 300px;
+            transform: perspective(1000px) rotateY(-15deg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .testimonial-text {
+            position: relative;
+        }
+
+        .quote {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .quote::before {
+            content: '"';
+            font-size: 4rem;
+            color: #40E0D0;
+            position: absolute;
+            left: -2rem;
+            top: -1rem;
+        }
+
+        .author {
+            color: #888;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .author-bio {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Discovery Section */
+        .discovery {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .discovery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .discovery-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .discovery-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .discovery-image {
+            height: 200px;
+            background: linear-gradient(45deg, #FF6B35, #40E0D0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .discovery-content {
+            padding: 2rem;
+        }
+
+        .discovery-content h3 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .discovery-content p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Brand Partnerships */
+        .brand-partnerships {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #6B46C1, #9333EA);
+            color: white;
+            text-align: center;
+        }
+
+        .brand-partnerships h2 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .brand-partnerships h3 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .brand-partnerships p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Take With You */
+        .take-with-you {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #40E0D0, #00CED1);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .underwater-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><path d="M0,300 Q300,200 600,300 T1200,300 V600 H0 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+        }
+
+        .take-with-you h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .take-with-you p {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .app-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .devices-preview {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .devices-grid {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .device {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .tablet {
+            width: 250px;
+            height: 180px;
+        }
+
+        .laptop {
+            width: 300px;
+            height: 200px;
+        }
+
+        .phone {
+            width: 150px;
+            height: 250px;
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #555;
+            color: #888;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .path-options {
+                grid-template-columns: 1fr;
+            }
+
+            .studios-content,
+            .books-content,
+            .testimonial-content {
+                grid-template-columns: 1fr;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .discovery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .search-input {
+                width: 200px;
+            }
+
+            .devices-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header class="header">
+    <div class="nav-container">
+        <div class="logo">attpad</div>
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="#" th:text="#{nav.browse}">Browse</a></li>
+                <li><a href="#" th:text="#{nav.community}">Community</a></li>
+            </ul>
+        </nav>
+        <div class="search-container">
+            <input type="text" class="search-input" th:placeholder="#{search.placeholder}" placeholder="Search">
+        </div>
+        <div class="auth-buttons">
+            <a href="#" class="btn btn-primary" th:text="#{btn.write}">Write</a>
+            <a href="#" class="btn btn-primary" th:text="#{btn.try_premium}">Try Premium</a>
+            <a href="sign-in.html" th:text="#{btn.login}">Log In</a>
+            <a href="sign-up.html" th:text="#{btn.signup}">Sign Up</a>
+        </div>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1 th:text="#{hero.title}">Hi, we're Wattpad.</h1>
+            <p th:text="#{hero.subtitle}">The world's largest storytelling community</p>
+            <p th:text="#{hero.description}">Home to 89 million people¹ who love original stories, Wattpad has democratized storytelling for a new generation of diverse Gen Z writers and their fans.</p>
+            <p class="stats" th:text="#{hero.stats}">¹As of the quarter ended June 30, 2024</p>
+            <div class="hero-buttons">
+                <a href="sign-up.html" class="btn btn-primary" th:text="#{btn.start_reading}">Start Reading</a>
+                <a href="sign-up.html" class="btn btn-primary" th:text="#{btn.start_writing}">Start Writing</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="device-mockup">
+                <div style="height: 300px; background: linear-gradient(45deg, #FF6B35, #40E0D0); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                    Wattpad Interface Preview
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Story Path Section -->
+<section class="story-path">
+    <div class="section-container">
+        <h2 class="section-title" th:text="#{story_path.title}">See Your Story...</h2>
+        <div class="path-options">
+            <div class="path-card">
+                <div class="path-icon">🎬</div>
+                <h3 th:text="#{path.movie}">Get produced to movie or film</h3>
+            </div>
+            <div class="path-card">
+                <div class="path-icon">📺</div>
+                <h3 th:text="#{path.tv}">Get adapted to a TV series</h3>
+            </div>
+            <div class="path-card">
+                <div class="path-icon">📚</div>
+                <h3 th:text="#{path.published}">Get published</h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Studios Section -->
+<section class="studios-section">
+    <div class="studios-content">
+        <div class="studios-visual">
+            <div style="width: 100%; height: 300px; background: linear-gradient(45deg, #FF6B35, #333); border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                Movie Posters Preview
+            </div>
+        </div>
+        <div class="studios-text">
+            <h2 th:text="#{studios.brand}">wattpad studios</h2>
+            <h3 th:text="#{studios.title}">Your original story could be the next big hit</h3>
+            <p th:text="#{studios.description}">Wattpad Studios discovers untapped, unsigned, and talented writers on Wattpad and connects them to global multi-media entertainment companies.</p>
+            <p th:text="#{studios.partners}">Wattpad Studios works with partners such as:</p>
+            <div class="partner-logos">
+                <div style="padding: 10px 20px; background: #333; color: white; border-radius: 5px;">SONY</div>
+                <div style="padding: 10px 20px; background: #333; color: white; border-radius: 5px;">hulu</div>
+                <div style="padding: 10px 20px; background: #333; color: white; border-radius: 5px;">SYFY</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Books Section -->
+<section class="books-section">
+    <div class="books-content">
+        <div class="studios-text">
+            <h2 th:text="#{books.brand}">wattpad books</h2>
+            <h3 th:text="#{books.title}">Your voice belongs on bookshelves</h3>
+            <p th:text="#{books.description}">Wattpad Books aspires to recognize and reflect diverse voices by taking Wattpad stories to published book and onto bookshelves around the world.</p>
+            <p th:text="#{books.partners}">Wattpad Books works with partners such as:</p>
+            <div class="partner-logos">
+                <div style="padding: 10px 20px; background: #333; color: white; border-radius: 5px;">macmillan</div>
+                <div style="padding: 10px 20px; background: #333; color: white; border-radius: 5px;">ANVIL</div>
+                <div style="padding: 10px 20px; background: #333; color: white; border-radius: 5px;">Penguin</div>
+            </div>
+        </div>
+        <div class="book-covers">
+            <div style="width: 150px; height: 220px; background: linear-gradient(45deg, #8B4513, #D2691E); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; transform: rotate(-5deg);">
+                OB BAD BOY
+            </div>
+            <div style="width: 150px; height: 220px; background: linear-gradient(45deg, #FF1493, #9400D3); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; transform: rotate(5deg); margin-top: -20px;">
+                I'm a Gay Wizard
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works">
+    <div class="section-container">
+        <h2 class="section-title" th:text="#{how_it_works.title}">How Wattpad Works</h2>
+        <p th:text="#{how_it_works.subtitle}">Get your story discovered through the power of community and technology on Wattpad.</p>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3 th:text="#{step1.title}">Create</h3>
+                <p th:text="#{step1.description}">Share your unique voice and original story on Wattpad. Find the writing resources you need to craft a story only you can tell.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3 th:text="#{step2.title}">Build</h3>
+                <p th:text="#{step2.description}">Establish a global fan base as your story gains readership and momentum. Connect with other like-minded writers through storytelling.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3 th:text="#{step3.title}">Amplify</h3>
+                <p th:text="#{step3.description}">Get your story published or adapted into film or television with Wattpad WEBTOON Studios!</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonial -->
+<section class="testimonial">
+    <div class="testimonial-content">
+        <div>
+            <div style="width: 250px; height: 350px; background: linear-gradient(45deg, #000, #4B0082); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; transform: perspective(1000px) rotateY(-15deg); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+                White Stag
+            </div>
+        </div>
+        <div class="testimonial-text">
+            <p class="quote" th:text="#{testimonial.quote}">Working with Wattpad Studios is like a dream. Not only do they care about your success, but also staying true to your vision.</p>
+            <p class="author" th:text="#{testimonial.author}">— KARA BARBIERI (@PANDEAN)</p>
+            <p class="author-bio" th:text="#{testimonial.bio}">Kara Barbieri is a twenty-two year old author with a love for the weird and mystic. Her debut novel, WHITE STAG, will be published by Wednesday Books/Macmillan in January 2019.</p>
+            <div style="margin-top: 2rem;">
+                <a href="#" class="btn btn-primary" th:text="#{btn.start_reading}">Start Reading</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Discovery Section -->
+<section class="discovery">
+    <div class="section-container">
+        <h2 class="section-title" th:text="#{discovery.title}">Get Discovered</h2>
+        <div class="discovery-grid">
+            <div class="discovery-card">
+                <div class="discovery-image">
+                    ✏️
+                </div>
+                <div class="discovery-content">
+                    <h3 th:text="#{discovery.contests}">Writing Contests</h3>
+                    <p th:text="#{discovery.contests_desc}">Enter writing contests to get published, win awards, and partner with global brands.</p>
+                </div>
+            </div>
+            <div class="discovery-card">
+                <div class="discovery-image">
+                    🏆
+                </div>
+                <div class="discovery-content">
+                    <h3 th:text="#{discovery.wattys}">The Wattys</h3>
+                    <p th:text="#{discovery.wattys_desc}">Wattpad's annual awards program committed to celebrating the best stories around the world.</p>
+                </div>
+            </div>
+            <div class="discovery-card">
+                <div class="discovery-image">
+                    ⭐
+                </div>
+                <div class="discovery-content">
+                    <h3 th:text="#{discovery.picks}">Wattpad Picks</h3>
+                    <p th:text="#{discovery.picks_desc}">Get featured on our hand-picked reading list.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Brand Partnerships -->
+<section class="brand-partnerships">
+    <div class="section-container">
+        <h2 th:text="#{brand.subtitle}">wattpad brand partnerships</h2>
+        <h3 th:text="#{brand.title}">The world's most positive platform for brands to engage Gen Z.</h3>
+        <p th:text="#{brand.description}">If you're a business, click below to learn more.</p>
+        <a href="#" class="btn btn-secondary" th:text="#{btn.learn_more}">Learn more</a>
+    </div>
+</section>
+
+</body>
