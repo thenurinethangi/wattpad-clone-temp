@@ -18,4 +18,9 @@ public class ParagraphService {
 
         return paragraphRepository.findAllByChapter(chapter);
     }
+
+    public Paragraph addParagraphForAChapter(Paragraph paragraph) {
+
+        return paragraphRepository.save(paragraph);
+    }
 }

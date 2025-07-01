@@ -14,7 +14,7 @@ public class defaultController {
     @GetMapping
     public ResponseEntity<String> defaultMap(){
 
-        System.out.println("hello");
+//        System.out.println("hello");
         return new ResponseEntity<>(HttpStatusCode.valueOf(200));
     }
 }

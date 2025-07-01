@@ -8,6 +8,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Story {
 
     @Id
@@ -53,11 +54,17 @@ public class Story {
     @Column(name = "mature")
     private int mature = 0;
 
-    @Column(name = "reads")
-    private String reads;
+    @Column(name = "views")
+    private String views;
 
     @Column(name = "votes")
     private String votes;
+
+    @Column(name = "published_or_draft")
+    private String publishedOrDraft = "published";
+
+    @Column(name = "parts")
+    private int parts = 1;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

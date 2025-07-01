@@ -506,8 +506,7 @@
 
 <!-- Profile Header -->
 <section class="profile-header">
-  <a href="#" class="edit-profile-btn">⚙️ Edit Profile</a>
-  <img th:src="${user.avatarUrl}" src="https://via.placeholder.com/120x120/667eea/ffffff?text=Avatar" alt="Profile Avatar" class="profile-avatar">
+  <img th:src="${user.imagePath}" src="https://via.placeholder.com/120x120/667eea/ffffff?text=Avatar" alt="Profile Avatar" class="profile-avatar">
 
   <div class="profile-info">
     <h1 class="username" th:text="${user.username}">nethangi7</h1>
@@ -515,15 +514,15 @@
 
     <div class="profile-stats">
       <div class="stat">
-        <span class="stat-number" th:text="${user.worksCount}">0</span>
+        <span class="stat-number">0</span>
         <span class="stat-label">Works</span>
       </div>
       <div class="stat">
-        <span class="stat-number" th:text="${user.readingListsCount}">2</span>
+        <span class="stat-number">2</span>
         <span class="stat-label">Reading Lists</span>
       </div>
       <div class="stat">
-        <span class="stat-number" th:text="${user.followersCount}">2</span>
+        <span class="stat-number">2</span>
         <span class="stat-label">Followers</span>
       </div>
     </div>
@@ -536,16 +535,17 @@
   <aside class="sidebar">
     <div class="about-section">
       <h2 class="section-title">Help people get to know you</h2>
-      <button class="add-description-btn">Add Description</button>
+      <p th:text="${user.about}"></p>
 
-      <p class="join-date" th:text="'Joined ' + ${#temporals.format(user.joinDate, 'MMMM d, yyyy')}">Joined July 8, 2021</p>
+      <p class="join-date" th:text="'Joined ' + ${#temporals.format(user.joinedDate, 'MMMM d, yyyy')}">Joined July 8, 2021</p>
 
-      <div class="following-section" th:if="${user.following != null and !user.following.isEmpty()}">
-        <h3>FOLLOWING</h3>
-        <div th:each="followedUser : ${user.following}">
-          <img th:src="${followedUser.avatarUrl}" src="https://via.placeholder.com/50x50/ff6900/ffffff?text=U" alt="Following User" class="following-avatar">
-        </div>
-      </div>
+<!--      //followers-->
+<!--      <div class="following-section" th:if="${user.following != null and !user.following.isEmpty()}">-->
+<!--        <h3>FOLLOWING</h3>-->
+<!--        <div th:each="followedUser : ${user.following}">-->
+<!--          <img th:src="${followedUser.avatarUrl}" src="https://via.placeholder.com/50x50/ff6900/ffffff?text=U" alt="Following User" class="following-avatar">-->
+<!--        </div>-->
+<!--      </div>-->
 
       <div class="social-share">
         <h3>SHARE PROFILE</h3>
@@ -578,18 +578,21 @@
         <button style="background: none; border: none; font-size: 20px; color: #666;">⚙️</button>
       </div>
 
-      <p class="story-stats" th:text="${user.publishedStoriesCount + ' Published Stories • ' + user.draftStoriesCount + ' Draft (only visible to you)'}">0 Published Stories • 1 Draft (only visible to you)</p>
+      <p class="story-stats" th:text="${publishedStoriesCount + ' Published Stories • ' + draftStoriesCount + ' Draft (only visible to you)'}">0 Published Stories • 1 Draft (only visible to you)</p>
 
       <!-- Story Cards -->
-      <div th:each="story : ${user.stories}" class="story-card">
-        <img th:src="${story.coverUrl}" src="https://via.placeholder.com/120x160/4CAF50/ffffff?text=Story" alt="Story Cover" class="story-cover">
+      <div th:each="story : ${ownStories}" class="story-card">
+        <a th:href="@{/story/overview(id=${story.id})}">
+          <img th:src="@{'/assets/image/' + ${story.imagePath}}" alt="Story Cover" class="story-cover">
+        </a>
 
         <div class="story-info">
-          <h3 class="story-title" th:text="${story.title}">Temp</h3>
+          <a th:href="@{/story/overview(id=${story.id})}"><h3 class="story-title" th:text="${story.title}">Temp</h3></a>
           <p class="story-description" th:text="${story.description}">Sample Story for Development Purposes(Wattpad Clone Web Application development)</p>
 
+<!--          //th:each="tag : ${story.tags}"-->
           <div class="story-tags">
-            <span th:each="tag : ${story.tags}" class="tag" th:text="${tag}">develop</span>
+            <span class="tag" th:text="${story.tags}">develop</span>
           </div>
 
           <div class="story-meta">
@@ -598,32 +601,7 @@
             <span><i class="fas fa-list"></i><span th:text="${story.parts}">2</span></span>
           </div>
 
-          <div th:if="${story.isDraft}" class="draft-label">DRAFT (only visible to you)</div>
-        </div>
-      </div>
-
-      <!-- Default story when no stories exist -->
-      <div th:if="${user.stories == null or user.stories.isEmpty()}" class="story-card">
-        <img src="https://via.placeholder.com/120x160/4CAF50/ffffff?text=Story" alt="Story Cover" class="story-cover">
-
-        <div class="story-info">
-          <h3 class="story-title">Temp</h3>
-          <p class="story-description">Sample Story for Development Purposes(Wattpad Clone Web Application development)</p>
-
-          <div class="story-tags">
-            <span class="tag">develop</span>
-            <span class="tag">software</span>
-            <span class="tag">temp</span>
-            <span class="tag">+1 more</span>
-          </div>
-
-          <div class="story-meta">
-            <span><i class="fas fa-eye"></i>2</span>
-            <span><i class="fas fa-star"></i>1</span>
-            <span><i class="fas fa-list"></i>2</span>
-          </div>
-
-          <div class="draft-label">DRAFT (only visible to you)</div>
+          <div th:if="${draftStoriesCount>0}" class="draft-label">DRAFT (only visible to you)</div>
         </div>
       </div>
     </section>
@@ -631,15 +609,15 @@
     <!-- Reading Lists Section -->
     <section class="reading-list-section">
       <div class="reading-list-header">
-        <h2 class="reading-list-title" th:text="${user.readingListsCount + ' Reading List'}">1 Reading List</h2>
+        <h2 class="reading-list-title">1 Reading List</h2>
         <div>
           <button style="background: none; border: none; font-size: 20px; color: #666;">+</button>
           <button style="background: none; border: none; font-size: 20px; color: #666;">⚙️</button>
         </div>
       </div>
 
-      <!-- Reading Lists -->
-      <div th:each="readingList : ${user.readingLists}" class="reading-list-item">
+<!--       Reading Lists -->
+      <div th:if="${isReadingListExist}" th:each="readingList : ${user.readingLists}" class="reading-list-item">
         <h3 class="reading-list-name" th:text="${readingList.name + '''s Reading List'}">nethangi7's Reading List</h3>
         <p class="reading-list-info" th:text="'Reading List • ' + ${readingList.storiesCount + ' Story'}">Reading List • 1 Story</p>
 
@@ -656,24 +634,8 @@
           </div>
         </div>
       </div>
-
-      <!-- Default reading list when none exist -->
-      <div th:if="${user.readingLists == null or user.readingLists.isEmpty()}" class="reading-list-item">
-        <h3 class="reading-list-name">nethangi7's Reading List</h3>
-        <p class="reading-list-info">Reading List • 1 Story</p>
-
-        <div class="reading-list-story">
-          <img src="https://via.placeholder.com/80x106/333333/ffffff?text=STIGMA" alt="Story Cover" class="reading-list-cover">
-
-          <div class="reading-list-story-info">
-            <h4>STIGMA (Taekook)</h4>
-            <div class="reading-list-stats">
-              <span><i class="fas fa-eye"></i>57.8K</span>
-              <span><i class="fas fa-star"></i>10.8K</span>
-              <span><i class="fas fa-list"></i>48</span>
-            </div>
-          </div>
-        </div>
+      <div th:unless="${isReadingListExist}">
+          <button style="background-color: orangered; padding: 10px; border: none; border-radius: 5px;">Create New Reading List</button>
       </div>
     </section>
   </main>

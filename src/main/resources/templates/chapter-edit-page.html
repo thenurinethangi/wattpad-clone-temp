@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Chapter - Wattpad Clone</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Your existing CSS here */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .top-header {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+            padding: 8px;
+        }
+
+        .story-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .story-cover {
+            width: 40px;
+            height: 60px;
+            background: linear-gradient(135deg, #333, #666);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .story-details h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .story-status {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .saved-indicator {
+            color: #00a8cc;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: #f68b1f;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #e67c0f;
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f8f8;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .more-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #666;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .editor-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: calc(100vh - 140px);
+        }
+
+        .media-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .media-btn {
+            background: #666;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .media-btn:hover {
+            background: #555;
+        }
+
+        .chapter-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .chapter-title h1 {
+            font-size: 32px;
+            font-weight: 400;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .content-editor {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 500px;
+        }
+
+        .paragraph-container {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .paragraph-textarea {
+            width: 100%;
+            border: none;
+            outline: none;
+            resize: none;
+            font-family: Georgia, serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            background: transparent;
+            padding: 10px 0;
+            min-height: 40px;
+        }
+
+        .paragraph-textarea::placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        .add-media-popup {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 15px;
+            display: none;
+            z-index: 10;
+            min-width: 200px;
+        }
+
+        .add-media-popup.show {
+            display: block;
+        }
+
+        .media-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .media-option:hover {
+            background: #f5f5f5;
+        }
+
+        .media-option i {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .embedded-media {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            text-align: center;
+            background: #fafafa;
+            position: relative;
+        }
+
+        .embedded-media img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .embedded-media iframe {
+            width: 100%;
+            height: 315px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .media-placeholder {
+            color: #666;
+            font-style: italic;
+        }
+
+        .media-remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .media-remove-btn:hover {
+            background: rgba(255, 0, 0, 1);
+        }
+
+        /* The .hidden-file-input class is no longer strictly needed but good for clarity */
+        .hidden-file-input {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .footer {
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            color: #f68b1f;
+        }
+
+        .word-count {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-size: 12px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .top-header {
+                padding: 0 15px;
+            }
+
+            .header-actions {
+                gap: 8px;
+            }
+
+            .btn {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
+            .editor-container {
+                padding: 20px 15px;
+            }
+
+            .content-editor {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="top-header">
+    <div class="header-left">
+        <button class="back-btn" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div class="story-info">
+            <div class="story-cover"></div>
+            <div class="story-details">
+                <p style="color: #333333; font-size: 12px" th:text="${story.title}">story title</p>
+                <h2 th:text="${'Untitled Part '+chapterNo}">Untitled Part 1</h2>
+                <div class="story-status">
+                    Draft (<span id="wordCount">0</span> Words)
+                    <span class="saved-indicator">Saved</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-actions">
+        <button class="btn btn-primary" type="button" onclick="submitForm('publish')">Publish</button>
+        <button class="btn btn-secondary" type="button" onclick="submitForm('save')">Save</button>
+        <button class="btn btn-outline" type="button" onclick="previewChapter()">Preview</button>
+        <button class="more-btn">
+            <i class="fas fa-ellipsis-h"></i>
+        </button>
+    </div>
+</div>
+
+<div class="editor-container">
+    <div class="media-buttons">
+        <button class="media-btn" onclick="insertMedia('image')">
+            <i class="fas fa-image"></i>
+            Add Image
+        </button>
+        <button class="media-btn" onclick="insertMedia('video')">
+            <i class="fas fa-video"></i>
+            Add Video
+        </button>
+    </div>
+
+    <div class="chapter-title">
+        <h1 contenteditable="true" id="chapterTitleEdit" th:text="${'Untitled Part '+chapterNo}">
+            Untitled Part 1
+        </h1>
+    </div>
+
+    <form th:action="@{/chapter/add}" method="post" id="chapterForm" enctype="multipart/form-data">
+        <input type="hidden" name="storyId" th:value="${story.id}">
+        <input type="hidden" name="chapterTitle" id="chapterTitleInput" th:value="${'Untitled Part '+chapterNo}">
+        <input type="hidden" name="chapterContentJson" id="chapterContentJsonInput">
+        <input type="hidden" name="actionType" id="actionTypeInput">
+
+        <div class="content-editor" id="contentEditor">
+            <div class="paragraph-container" id="initial_paragraph" data-paragraph-id="initial_paragraph">
+                <textarea class="paragraph-textarea" id="initial_textarea" placeholder="Type your text"
+                          onkeydown="handleKeyDown(event, this)"
+                          oninput="updateWordCount()"></textarea>
+                <div class="add-media-popup" id="initial_popup">
+                    <div class="media-option" onclick="addMediaToCurrentParagraph('image')">
+                        <i class="fas fa-image"></i>
+                        <span>Add Image</span>
+                    </div>
+                    <div class="media-option" onclick="addMediaToCurrentParagraph('video')">
+                        <i class="fas fa-video"></i>
+                        <span>Add Video</span>
+                    </div>
+                    <div class="media-option" onclick="hideMediaPopup()">
+                        <i class="fas fa-times"></i>
+                        <span>Continue Writing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" style="display: none;" id="actualSubmitButton"></button>
+    </form>
+</div>
+
+<input type="file" id="masterImageInput" class="hidden-file-input" accept="image/*" onchange="handleMasterImageSelection(event)">
+
+<div class="footer">
+    <div class="footer-links">
+        <a href="#">Wattpad Originals</a>
+        <a href="#">Try Premium</a>
+        <a href="#">Get the App</a>
+        <a href="#">Language</a>
+        <a href="#">Writers</a>
+        <a href="#">Brand Partnerships</a>
+        <a href="#">Jobs</a>
+        <a href="#">Press</a>
+    </div>
+</div>
+
+<div class="word-count">
+    <span id="wordCountDisplay">0 words</span>
+</div>
+
+<script>
+    let currentParagraph = null;
+    let paragraphCount = 1; // Keep track for initial setup
+    let attachedImageFiles = new Map(); // Stores File objects, keyed by a unique ID
+    let nextImageFileIndex = 0; // To generate unique names for file inputs
+
+    // Generate unique IDs with timestamp to ensure uniqueness
+    function generateUniqueId(type) {
+        const timestamp = Date.now();
+        const random = Math.floor(Math.random() * 10000); // Increased random range
+        return `${type}_${timestamp}_${random}`;
+    }
+
+    function handleKeyDown(event, textarea) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            showMediaPopup(textarea);
+        }
+
+        // Auto-resize textarea
+        setTimeout(() => {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }, 0);
+    }
+
+    function showMediaPopup(textarea) {
+        currentParagraph = textarea.parentElement;
+        const popup = currentParagraph.querySelector('.add-media-popup');
+        popup.classList.add('show');
+
+        // Hide other popups
+        document.querySelectorAll('.add-media-popup').forEach(p => {
+            if (p !== popup) p.classList.remove('show');
+        });
+    }
+
+    function hideMediaPopup() {
+        document.querySelectorAll('.add-media-popup').forEach(p => {
+            p.classList.remove('show');
+        });
+        addNewParagraph(); // Add a new paragraph automatically after media selection/popup close
+    }
+
+    function addMediaToCurrentParagraph(type) {
+        hideAllPopups(); // Hide all popups first
+
+        if (type === 'image') {
+            document.getElementById('masterImageInput').click(); // Trigger the master file input
+        } else if (type === 'video') {
+            const videoUrl = prompt('Enter YouTube video URL:');
+            if (videoUrl) {
+                const videoId = extractYouTubeId(videoUrl);
+                if (videoId) {
+                    const mediaElementId = generateUniqueId('video_embed');
+                    const mediaDiv = document.createElement('div');
+                    mediaDiv.className = 'embedded-media';
+                    mediaDiv.setAttribute('data-media-type', 'video');
+                    // Store the original URL and extracted ID for backend processing
+                    mediaDiv.setAttribute('data-video-url', videoUrl);
+                    mediaDiv.setAttribute('data-video-id', videoId);
+                    mediaDiv.setAttribute('id', mediaElementId); // Unique ID for element
+
+                    mediaDiv.innerHTML = `
+                        <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <button class="media-remove-btn" onclick="removeMedia(this)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    currentParagraph.appendChild(mediaDiv);
+                    addNewParagraph(); // Add a new paragraph after adding video
+                } else {
+                    alert('Please enter a valid YouTube URL (e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ)');
+                    return;
+                }
+            }
+        }
+    }
+
+    function handleMasterImageSelection(event) {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const imageUniqueId = generateUniqueId('image_file'); // Unique ID for this specific image file
+            attachedImageFiles.set(imageUniqueId, file); // Store the actual File object
+
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const mediaDiv = document.createElement('div');
+                mediaDiv.className = 'embedded-media';
+                mediaDiv.setAttribute('data-media-type', 'image');
+                mediaDiv.setAttribute('data-image-unique-id', imageUniqueId); // Link to the stored file
+                mediaDiv.setAttribute('id', generateUniqueId('image_embed')); // Unique ID for element
+
+                mediaDiv.innerHTML = `
+                    <img src="${e.target.result}" alt="Uploaded image">
+                    <button class="media-remove-btn" onclick="removeMedia(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                currentParagraph.appendChild(mediaDiv);
+                addNewParagraph(); // Add a new paragraph after adding image
+            };
+            reader.readAsDataURL(file);
+        } else if (file) {
+            alert('Please select a valid image file (e.g., JPG, PNG, GIF).');
+        }
+
+        // Reset file input to allow selecting the same file again if needed
+        event.target.value = '';
+    }
+
+    function removeMedia(button) {
+        const mediaDiv = button.parentElement;
+        const mediaType = mediaDiv.getAttribute('data-media-type');
+
+        if (mediaType === 'image') {
+            const imageUniqueId = mediaDiv.getAttribute('data-image-unique-id');
+            if (imageUniqueId) {
+                attachedImageFiles.delete(imageUniqueId); // Remove the file from our map
+            }
+        }
+        mediaDiv.remove();
+        updateWordCount();
+    }
+
+    function addNewParagraph() {
+        const editor = document.getElementById('contentEditor');
+        const paragraphId = generateUniqueId('paragraph_container');
+        const textareaId = generateUniqueId('textarea');
+        const popupId = generateUniqueId('popup');
+
+        const newParagraph = document.createElement('div');
+        newParagraph.className = 'paragraph-container';
+        newParagraph.setAttribute('id', paragraphId);
+        newParagraph.setAttribute('data-paragraph-id', paragraphId);
+        newParagraph.innerHTML = `
+            <textarea class="paragraph-textarea" id="${textareaId}" placeholder="Type your text"
+                      onkeydown="handleKeyDown(event, this)"
+                      oninput="updateWordCount()"></textarea>
+            <div class="add-media-popup" id="${popupId}">
+                <div class="media-option" onclick="addMediaToCurrentParagraph('image')">
+                    <i class="fas fa-image"></i>
+                    <span>Add Image</span>
+                </div>
+                <div class="media-option" onclick="addMediaToCurrentParagraph('video')">
+                    <i class="fas fa-video"></i>
+                    <span>Add Video</span>
+                </div>
+                <div class="media-option" onclick="hideMediaPopup()">
+                    <i class="fas fa-times"></i>
+                    <span>Continue Writing</span>
+                </div>
+            </div>
+        `;
+        editor.appendChild(newParagraph);
+
+        // Focus on new textarea after it's added to DOM
+        const newTextarea = newParagraph.querySelector('.paragraph-textarea');
+        newTextarea.focus();
+
+        paragraphCount++;
+    }
+
+    function hideAllPopups() {
+        document.querySelectorAll('.add-media-popup').forEach(p => {
+            p.classList.remove('show');
+        });
+    }
+
+    function extractYouTubeId(url) {
+        // Updated regex to correctly extract YouTube IDs from various URLs
+        const regExp = /(?:https?:\/\/)?(?:www\.)?(?:m\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|)([\w-]{11})(?:\S+)?/;
+        const match = url.match(regExp);
+        return (match && match[1].length === 11) ? match[1] : null;
+    }
+
+    function insertMedia(type) {
+        // For top buttons, add media at the end of the last paragraph
+        const editor = document.getElementById('contentEditor');
+        const lastParagraph = editor.querySelector('.paragraph-container:last-child');
+        currentParagraph = lastParagraph;
+        addMediaToCurrentParagraph(type);
+    }
+
+    function updateWordCount() {
+        const textareas = document.querySelectorAll('.paragraph-textarea');
+        let totalWords = 0;
+
+        textareas.forEach(textarea => {
+            const text = textarea.value.trim();
+            if (text) {
+                totalWords += text.split(/\s+/).length;
+            }
+        });
+
+        document.getElementById('wordCount').textContent = totalWords;
+        document.getElementById('wordCountDisplay').textContent = totalWords + ' words';
+    }
+
+    // Function to collect all content and prepare for form submission
+    function collectAndPrepareContentForForm() {
+        const chapterTitle = document.getElementById('chapterTitleEdit').textContent.trim();
+        document.getElementById('chapterTitleInput').value = chapterTitle; // Update hidden title field
+
+        const editor = document.getElementById('contentEditor');
+        const contentStructure = {
+            paragraphs: []
+        };
+
+        // Clear any old dynamically added file inputs from previous submissions
+        const form = document.getElementById('chapterForm');
+        form.querySelectorAll('input[type="file"][name^="imageFile_"]').forEach(input => input.remove());
+
+        // Prepare new hidden file inputs for images
+        let currentImageFileIndex = 0;
+        attachedImageFiles.forEach((file, uniqueImageId) => {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.name = `imageFile_${currentImageFileIndex}`; // Unique name for each file
+            fileInput.style.display = 'none'; // Keep it hidden
+            // Create a DataTransfer object to assign the File to the input
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+
+            form.appendChild(fileInput); // Add to the form
+            // Also store this new name in our map for easy lookup
+            attachedImageFiles.set(uniqueImageId, { file: file, formFieldName: fileInput.name });
+            currentImageFileIndex++;
+        });
+
+
+        // Iterate through each paragraph container to build the content structure
+        editor.querySelectorAll('.paragraph-container').forEach((container) => {
+            const textarea = container.querySelector('.paragraph-textarea');
+            const media = container.querySelector('.embedded-media'); // Only one media per paragraph container for now
+
+            const paragraphData = {
+                type: 'text', // Default to text
+                value: textarea.value.trim(),
+                media: null // Placeholder for media data
+            };
+
+            if (media) {
+                const mediaType = media.getAttribute('data-media-type');
+                if (mediaType === 'image') {
+                    const imageUniqueId = media.getAttribute('data-image-unique-id');
+                    const storedImage = attachedImageFiles.get(imageUniqueId);
+                    if (storedImage && storedImage.formFieldName) {
+                        paragraphData.media = {
+                            type: 'image',
+                            formFieldName: storedImage.formFieldName // Reference the hidden file input name
+                        };
+                    }
+                } else if (mediaType === 'video') {
+                    const videoUrl = media.getAttribute('data-video-url');
+                    const videoId = media.getAttribute('data-video-id');
+                    paragraphData.media = {
+                        type: 'video',
+                        url: videoUrl,
+                        videoId: videoId
+                    };
+                }
+            }
+            contentStructure.paragraphs.push(paragraphData);
+        });
+
+        // Set the JSON string of the content structure to the hidden input
+        document.getElementById('chapterContentJsonInput').value = JSON.stringify(contentStructure);
+    }
+
+    // Function to submit the form based on action (publish/save)
+    function submitForm(action) {
+        document.getElementById('actionTypeInput').value = action; // Set the action type
+        collectAndPrepareContentForForm(); // Prepare all content
+        document.getElementById('chapterForm').submit(); // Submit the form
+    }
+
+    // Function for preview (still uses JS to open a new tab)
+    function previewChapter() {
+        collectAndPrepareContentForForm();
+        const contentJson = document.getElementById('chapterContentJsonInput').value;
+        const chapterTitle = document.getElementById('chapterTitleInput').value;
+        // You might need a server endpoint that specifically handles preview data
+        // For simplicity, passing JSON as a query parameter (might exceed URL limits for large content)
+        window.open(`/chapters/preview?title=${encodeURIComponent(chapterTitle)}&content=${encodeURIComponent(contentJson)}`, '_blank');
+    }
+
+
+    // Auto-save functionality (still uses fetch because it's background)
+    setInterval(async () => {
+        const storyId = document.querySelector('input[name="storyId"]')?.value;
+        if (!storyId) return; // Don't auto-save if no storyId
+
+        const chapterTitle = document.getElementById('chapterTitleEdit').textContent.trim();
+        const editor = document.getElementById('contentEditor');
+        const contentStructureForAutoSave = {
+            paragraphs: []
+        };
+
+        editor.querySelectorAll('.paragraph-container').forEach((container) => {
+            const textarea = container.querySelector('.paragraph-textarea');
+            const media = container.querySelector('.embedded-media');
+
+            const paragraphData = {
+                type: 'text',
+                value: textarea.value.trim(),
+                media: null
+            };
+
+            if (media) {
+                const mediaType = media.getAttribute('data-media-type');
+                if (mediaType === 'image') {
+                    // For auto-save, we can't send the file directly with a simple JSON
+                    // You might save a reference to a temporary URL or just skip file data for auto-save
+                    // Or, if your auto-save endpoint is multipart, you'd need similar logic to collectAndPrepareContentForForm
+                    // For now, let's just indicate there's an image
+                    const imgSrc = media.querySelector('img')?.src;
+                    paragraphData.media = { type: 'image', url: imgSrc }; // Store base64 or temporary URL if available
+                } else if (mediaType === 'video') {
+                    const videoUrl = media.getAttribute('data-video-url');
+                    const videoId = media.getAttribute('data-video-id');
+                    paragraphData.media = { type: 'video', url: videoUrl, videoId: videoId };
+                }
+            }
+            contentStructureForAutoSave.paragraphs.push(paragraphData);
+        });
+
+        const autoSaveFormData = new FormData();
+        autoSaveFormData.append('storyId', storyId);
+        autoSaveFormData.append('chapterTitle', chapterTitle);
+        autoSaveFormData.append('chapterContentJson', JSON.stringify(contentStructureForAutoSave));
+
+        try {
+            const response = await fetch('/chapters/autosave', {
+                method: 'POST',
+                body: autoSaveFormData
+            });
+            if (response.ok) {
+                console.log('Chapter auto-saved successfully!');
+                document.querySelector('.saved-indicator').textContent = 'Saved';
+                setTimeout(() => {
+                    document.querySelector('.saved-indicator').textContent = 'Draft';
+                }, 3000); // Briefly show "Saved"
+            } else {
+                console.error('Auto-save failed:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Auto-save error:', error);
+        }
+    }, 30000); // Auto-save every 30 seconds
+
+
+    // Hide popups when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.add-media-popup') && !event.target.closest('.paragraph-textarea')) {
+            hideAllPopups();
+        }
+    });
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        updateWordCount();
+
+        // Focus on first textarea
+        const firstTextarea = document.querySelector('.paragraph-textarea');
+        if (firstTextarea) {
+            firstTextarea.focus();
+            // Adjust its height on load
+            firstTextarea.style.height = 'auto';
+            firstTextarea.style.height = firstTextarea.scrollHeight + 'px';
+        }
+    });
+</script>
+</body>
+</html>

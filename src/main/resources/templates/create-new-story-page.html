@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Story Info - Wattpad</title>
+    <style>
+        /* ... (Your existing CSS here, no changes needed from your last provided code) ... */
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+        }
+
+
+
+        body {
+
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+            background-color: #f5f5f5;
+
+            color: #333;
+
+        }
+
+
+
+        .header {
+
+            background: white;
+
+            border-bottom: 1px solid #e0e0e0;
+
+            padding: 12px 20px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+        }
+
+
+
+        .header-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+
+        }
+
+
+
+        .back-btn {
+
+            background: none;
+
+            border: none;
+
+            font-size: 20px;
+
+            cursor: pointer;
+
+            color: #666;
+
+            padding: 4px;
+
+        }
+
+
+
+        .header-title {
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+
+
+        .header-subtitle {
+
+            font-size: 14px;
+
+            color: #666;
+
+            font-weight: normal;
+
+        }
+
+
+
+        .header-main-title {
+
+            font-size: 18px;
+
+            font-weight: 600;
+
+            color: #333;
+
+        }
+
+
+
+        .header-actions {
+
+            display: flex;
+
+            gap: 12px;
+
+        }
+
+
+
+        .cancel-btn {
+
+            background: none;
+
+            border: none;
+
+            color: #666;
+
+            padding: 8px 16px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+        }
+
+
+
+        .skip-btn {
+
+            background: #ff6b35;
+
+            color: white;
+
+            border: none;
+
+            padding: 8px 16px;
+
+            border-radius: 4px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+        }
+
+
+
+        .main-container {
+
+            max-width: 1200px;
+
+            margin: 0 auto;
+
+            padding: 40px 20px;
+
+            display: flex;
+
+            gap: 40px;
+
+        }
+
+
+
+        .left-section {
+
+            flex: 0 0 300px;
+
+        }
+
+
+
+        .cover-upload {
+
+            background: white;
+
+            border: 1px solid #e0e0e0;
+
+            border-radius: 8px;
+
+            padding: 40px 20px;
+
+            text-align: center;
+
+            position: relative;
+
+            height: 400px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+
+        .cover-icon {
+
+            width: 80px;
+
+            height: 80px;
+
+            background: #666;
+
+            border-radius: 8px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin-bottom: 16px;
+
+        }
+
+
+
+        .cover-icon::before {
+
+            content: "🖼️";
+
+            font-size: 32px;
+
+            filter: grayscale(1);
+
+        }
+
+
+
+        .cover-text {
+
+            color: #666;
+
+            font-size: 16px;
+
+        }
+
+
+
+        .info-icon {
+
+            position: absolute;
+
+            bottom: 12px;
+
+            right: 12px;
+
+            width: 20px;
+
+            height: 20px;
+
+            background: #666;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: white;
+
+            font-size: 12px;
+
+        }
+
+
+
+        .right-section {
+
+            flex: 1;
+
+            background: white;
+
+            border-radius: 8px;
+
+            padding: 0;
+
+            border: 1px solid #e0e0e0;
+
+        }
+
+
+
+        .form-section {
+
+            padding: 32px;
+
+        }
+
+
+
+        .section-divider {
+
+            height: 1px;
+
+            background: #e0e0e0;
+
+            margin: 0 32px;
+
+        }
+
+
+
+        .form-group {
+
+            margin-bottom: 32px;
+
+        }
+
+
+
+        .form-label {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-bottom: 12px;
+
+            font-size: 18px;
+
+            font-weight: 600;
+
+            color: #333;
+
+        }
+
+
+
+        .form-label .info-icon-small {
+
+            width: 16px;
+
+            height: 16px;
+
+            background: #666;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: white;
+
+            font-size: 10px;
+
+        }
+
+
+
+        .form-input {
+
+            width: 100%;
+
+            padding: 12px 16px;
+
+            border: 1px solid #d0d0d0;
+
+            border-radius: 4px;
+
+            font-size: 16px;
+
+            background: #f9f9f9;
+
+        }
+
+
+
+        .form-input:focus {
+
+            outline: none;
+
+            border-color: #ff6b35;
+
+            background: white;
+
+        }
+
+
+
+        .form-textarea {
+
+            width: 100%;
+
+            min-height: 120px;
+
+            padding: 12px 16px;
+
+            border: 1px solid #d0d0d0;
+
+            border-radius: 4px;
+
+            font-size: 16px;
+
+            background: #f9f9f9;
+
+            resize: vertical;
+
+            font-family: inherit;
+
+        }
+
+
+
+        .form-textarea:focus {
+
+            outline: none;
+
+            border-color: #ff6b35;
+
+            background: white;
+
+        }
+
+
+
+        .form-select {
+
+            width: 100%;
+
+            padding: 12px 16px;
+
+            border: 1px solid #d0d0d0;
+
+            border-radius: 4px;
+
+            font-size: 16px;
+
+            background: #f9f9f9;
+
+            cursor: pointer;
+
+        }
+
+
+
+        .form-select:focus {
+
+            outline: none;
+
+            border-color: #ff6b35;
+
+            background: white;
+
+        }
+
+
+
+        .characters-section {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+
+        }
+
+
+
+        .add-character-btn {
+
+            width: 40px;
+
+            height: 40px;
+
+            border: 2px dashed #d0d0d0;
+
+            background: none;
+
+            border-radius: 4px;
+
+            cursor: pointer;
+
+            font-size: 20px;
+
+            color: #666;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+
+        .add-character-btn:hover {
+
+            border-color: #ff6b35;
+
+            color: #ff6b35;
+
+        }
+
+
+
+        .tags-section {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+
+        .add-tag-btn {
+
+            background: #f0f0f0;
+
+            border: 1px solid #d0d0d0;
+
+            padding: 8px 12px;
+
+            border-radius: 16px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            color: #666;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+        }
+
+
+
+        .add-tag-btn:hover {
+
+            background: #e8e8e8;
+
+        }
+
+
+
+        .copyright-description {
+
+            color: #666;
+
+            font-size: 14px;
+
+            margin-top: 8px;
+
+            line-height: 1.4;
+
+        }
+
+
+
+        .rating-section {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+
+        }
+
+
+
+        .rating-toggle {
+
+            background: #f0f0f0;
+
+            border: 1px solid #d0d0d0;
+
+            padding: 8px 16px;
+
+            border-radius: 4px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            color: #666;
+
+        }
+
+
+
+        .rating-description {
+
+            color: #666;
+
+            font-size: 14px;
+
+            margin-top: 12px;
+
+            line-height: 1.4;
+
+        }
+
+
+
+        .rating-link {
+
+            color: #ff6b35;
+
+            text-decoration: none;
+
+        }
+
+
+
+        .bottom-section {
+
+            padding: 24px 32px;
+
+            border-top: 1px solid #e0e0e0;
+
+            background: #fafafa;
+
+        }
+
+
+
+        .guidelines-text {
+
+            color: #666;
+
+            font-size: 14px;
+
+            text-align: center;
+
+            line-height: 1.4;
+
+        }
+
+
+
+        .guidelines-link {
+
+            color: #ff6b35;
+
+            text-decoration: none;
+
+        }
+
+
+
+        @media (max-width: 768px) {
+
+            .main-container {
+
+                flex-direction: column;
+
+                padding: 20px;
+
+                gap: 20px;
+
+            }
+
+
+
+            .left-section {
+
+                flex: none;
+
+            }
+
+
+
+            .cover-upload {
+
+                height: 300px;
+
+            }
+
+        }
+
+        /* Adding a style for the image preview directly on the cover-upload div */
+        /* This will make the background image act as the preview */
+        .cover-upload {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-size: cover; /* Ensures image covers the area */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents image repetition */
+            overflow: hidden; /* Ensures image does not spill out */
+        }
+
+        /* Style to hide the default icon/text when an image is set */
+        .cover-upload.has-image .cover-icon,
+        .cover-upload.has-image .cover-text {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="header-left">
+        <a class="back-btn">←</a>
+        <div class="header-title">
+            <div class="header-subtitle">Add Story Info</div>
+            <div class="header-main-title">Untitled Story</div>
+        </div>
+    </div>
+    <div class="header-actions">
+        <a class="cancel-btn">Cancel</a>
+        <button type="button" form="story-form" class="skip-btn">Skip</button>
+    </div>
+</div>
+
+<form id="story-form" th:action="@{/story/createNewStory}" method="post" enctype="multipart/form-data">
+    <input th:value="${userId}" style="display: none" name="userId">
+    <div class="main-container">
+        <div class="left-section">
+            <div class="cover-upload" id="cover-upload-area">
+                <input type="file" name="coverImage" accept="image/*" style="display: none;" id="cover-input">
+                <label for="cover-input" style="cursor: pointer; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <div class="cover-icon"></div>
+                    <div class="cover-text">Add a cover</div>
+                </label>
+                <div class="info-icon">i</div>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <div class="form-section">
+                <div class="form-group">
+                    <div class="form-label">Title</div>
+                    <input type="text" name="title" class="form-input"/>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        Description
+                        <div class="info-icon-small">i</div>
+                    </div>
+                    <textarea class="form-textarea" name="description" placeholder="Tell readers what your story is about..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        Main Characters
+                        <div class="info-icon-small">i</div>
+                    </div>
+                    <div class="characters-section">
+                        <input type="text" name="mainCharacters" class="form-input" placeholder="Name" style="flex: 1;" />
+                        <button type="button" class="add-character-btn">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="form-section">
+                <div class="form-group">
+                    <div class="form-label">
+                        Category
+                        <div class="info-icon-small">i</div>
+                    </div>
+                    <select class="form-select" name="category">
+                        <option value="">Select a category</option>
+                        <option value="romance">Romance</option>
+                        <option value="fantasy">Fantasy</option>
+                        <option value="young-adult">Young Adult</option>
+                        <option value="mystery">Mystery</option>
+                        <option value="science-fiction">Science Fiction</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        Tags
+                        <div class="info-icon-small">i</div>
+                    </div>
+                    <div class="tags-section">
+                        <input type="text" name="tags" placeholder="Add tags separated by commas" class="form-input" style="flex: 1;">
+                        <button type="button" class="add-tag-btn">Add a tag +</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        Target Audience
+                        <div class="info-icon-small">i</div>
+                    </div>
+                    <select name="targetAudience" class="form-select">
+                        <option value="">Who is your primary audience?</option>
+                        <option value="young-adult">Young Adult</option>
+                        <option value="adult">Adult</option>
+                        <option value="teen">Teen</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        Language
+                        <div class="info-icon-small">i</div>
+                    </div>
+                    <select name="language" class="form-select">
+                        <option value="english">English</option>
+                        <option value="spanish">Spanish</option>
+                        <option value="french">French</option>
+                        <option value="german">German</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        Copyright
+                        <div class="info-icon-small">i</div>
+                    </div>
+                    <select name="copyright" class="form-select">
+                        <option value="all-rights-reserved">All Rights Reserved</option>
+                        <option value="creative-commons">Creative Commons</option>
+                        <option value="public-domain">Public Domain</option>
+                    </select>
+                    <div class="copyright-description">
+                        You do not allow your work to be used or adapted in any way without your permission.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label">
+                        Rating
+                        <div class="info-icon-small">i</div>
+                    </div>
+                    <div class="rating-section">
+                        <span>Mature</span>
+                        <input type="hidden" name="isMature" id="isMatureInput" value="0">
+                        <button type="button" class="rating-toggle">OFF</button>
+                    </div>
+                    <div class="rating-description">
+                        Your story is appropriate for all audiences. The Wattpad community has the ability to rate your story Mature. For more info, please read <a href="/guidelines" class="rating-link">Wattpad's Content Guidelines</a>: <br>
+                        <a href="/guidelines" class="rating-link">https://www.wattpad.com/guidelines</a>
+                    </div>
+                </div>
+
+                <button type="submit" form="story-form" class="skip-btn">Next</button>
+            </div>
+
+            <div class="bottom-section">
+                <div class="guidelines-text">
+                    Writing and publishing is free. By continuing you agree to Wattpad's
+                    <a href="/terms" class="guidelines-link">Terms of Service</a> and acknowledge our
+                    <a href="/privacy" class="guidelines-link">Privacy Policy</a>.
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const coverInput = document.getElementById('cover-input');
+        const coverUploadArea = document.getElementById('cover-upload-area'); // The div for background image
+        const matureToggleBtn = document.querySelector('.rating-toggle'); // Select the toggle button
+        const isMatureInput = document.getElementById('isMatureInput'); // Hidden input for mature status
+
+        // --- Cover Image Logic ---
+        coverInput.addEventListener('change', function (e) {
+            // Ensure only one file is selected/processed
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0]; // Always take the first file
+
+                // If user somehow selected multiple, log a warning (optional)
+                if (e.target.files.length > 1) {
+                    console.warn('Multiple files selected, only the first will be used.');
+                    // To be absolutely sure, though not strictly necessary if you only use [0]:
+                    // const dataTransfer = new DataTransfer();
+                    // dataTransfer.items.add(file);
+                    // e.target.files = dataTransfer.files;
+                }
+
+                // Display the selected image as background
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    coverUploadArea.style.backgroundImage = `url(${event.target.result})`;
+                    coverUploadArea.classList.add('has-image'); // Add class to hide icon/text
+                };
+                reader.readAsDataURL(file);
+                console.log('Selected cover image:', file.name);
+            } else {
+                // If user opens file dialog and then cancels, clear previous selection
+                coverUploadArea.style.backgroundImage = 'none';
+                coverUploadArea.classList.remove('has-image'); // Show icon/text
+                console.log('No cover image selected or selection cleared.');
+            }
+        });
+
+        // --- Mature Rating Toggle Logic ---
+        matureToggleBtn.addEventListener('click', function() {
+            if (isMatureInput.value === '0') {
+                isMatureInput.value = '1';
+                matureToggleBtn.textContent = 'ON';
+            } else {
+                isMatureInput.value = '0';
+                matureToggleBtn.textContent = 'OFF';
+            }
+        });
+    });
+</script>
+</body>
+</html>

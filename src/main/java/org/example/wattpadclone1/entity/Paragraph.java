@@ -25,4 +25,10 @@ public class Paragraph {
 
     @Column(name = "sequence_no", nullable = false)
     private int sequenceNo;
+
+    public Paragraph(Chapter chapter, String content, int sequenceNo) {
+        this.chapter = chapter;
+        this.content = content;
+        this.sequenceNo = sequenceNo;
+    }
 }

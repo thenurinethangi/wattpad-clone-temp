@@ -23,4 +23,9 @@ public class ChapterService {
 
         return chapterRepository.findById(id).orElse(null);
     }
+
+    public Chapter saveNewChapterForStory(Chapter chapter) {
+
+        return chapterRepository.save(chapter);
+    }
 }

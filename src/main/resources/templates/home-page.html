@@ -403,8 +403,8 @@
             <div class="logo">
                 <div class="logo-icon">W</div>
             </div>
-            <a href="#" class="nav-item">Browse ▼</a>
-            <a href="#" class="nav-item">Community ▼</a>
+            <a class="nav-item">Browse ▼</a>
+            <a th:href="@{/user/library/{id}(id=${libraryStories.get(0).user.id})}" class="nav-item">Community ▼</a>
         </div>
 
         <div class="search-bar">
@@ -412,9 +412,9 @@
         </div>
 
         <div class="nav-right">
-            <a href="#" class="write-btn">Write ▼</a>
+            <a th:href="@{/story/createStory/{id}(id=${libraryStories.get(0).user.id})}" class="write-btn">Write ▼</a>
             <a href="#" class="premium-btn">⚡ Try Premium</a>
-            <div class="user-avatar">U</div>
+            <div class="user-avatar"><a th:href="@{/profile/{id}(id=${libraryStories.get(0).user.id})}">U</a></div>
         </div>
     </div>
 </header>
@@ -443,17 +443,17 @@
 
     <!-- Your Stories Progress -->
     <section class="story-progress story-scroll" th:if="${libraryStories}">
-        <div class="progress-item" th:each="story : ${libraryStories}">
-            <img th:src="@{'/assets/image/' + ${story.imagePath}}"
+        <a class="progress-item" th:each="library : ${libraryStories}" th:href="@{/chapter/lastReadChapter(libraryId=${library.id})}">
+            <img th:src="@{'/assets/image/' + ${library.story.imagePath}}"
                  width="150px" height="200px"
                  alt="story cover"
                  style="border-radius: 7px;">
             <div class="progress-bar">
-                <div class="progress-fill" th:style="'width: ' + ${story.title} + '%'"></div>
+                <div class="progress-fill" th:style="'width: ' + ${library.story.title} + '%'"></div>
             </div>
-            <div class="progress-text" th:text="${story.category + ' new parts'}">63 new parts</div>
-            <div class="progress-title" th:text="${story.totalPages}">Part 58</div>
-        </div>
+            <div class="progress-text" th:text="${library.story.category + ' new parts'}">63 new parts</div>
+            <div class="progress-title" th:text="${library.story.totalPages}">Part 58</div>
+        </a>
     </section>
 
     <!-- Top Picks Section -->
@@ -469,52 +469,52 @@
                 </div>
             </a>
             <!-- Static examples for demo -->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">AFTER2</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">direction</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: bold;">AFTER2</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">direction</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #2c3e50 0%, #34495e 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; font-weight: bold; text-align: center;">MY FAKE<br>BOYFRIEND</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">sarcastic</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #2c3e50 0%, #34495e 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; font-weight: bold; text-align: center;">MY FAKE<br>BOYFRIEND</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">sarcastic</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #1a1a1a 0%, #333 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; text-align: center;">HIS<br>POSSESSION</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">rivalry</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #1a1a1a 0%, #333 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; text-align: center;">HIS<br>POSSESSION</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">rivalry</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #2c3e50 0%, #3498db 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold;">LUCIFER</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">jimin</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #2c3e50 0%, #3498db 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold;">LUCIFER</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">jimin</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #e74c3c 0%, #c0392b 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; font-weight: bold;">COMPLICITY</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">zaynmalik</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #e74c3c 0%, #c0392b 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; font-weight: bold;">COMPLICITY</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">zaynmalik</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #95a5a6 0%, #7f8c8d 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold;">POSSESSED</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">natasharomanoff</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #95a5a6 0%, #7f8c8d 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold;">POSSESSED</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">natasharomanoff</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #3498db 0%, #2980b9 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; text-align: center;">soft<br>robotics</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">natasharomanoff</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #3498db 0%, #2980b9 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; text-align: center;">soft<br>robotics</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">natasharomanoff</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #1a1a1a 0%, #333 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: bold; text-align: center;">BLACK AND WHITE<br>THE MAFIA BOY</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">sinhala</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #1a1a1a 0%, #333 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: bold; text-align: center;">BLACK AND WHITE<br>THE MAFIA BOY</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">sinhala</div>-->
 <!--                </div>-->
 <!--            </div>-->
         </div>
@@ -536,52 +536,52 @@
                 </div>
             </div>
 <!--            &lt;!&ndash; Static examples for demo &ndash;&gt;-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #2c3e50 0%, #34495e 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; text-align: center;">GRADING<br>BAD BOY</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">author1</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #2c3e50 0%, #34495e 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; text-align: center;">GRADING<br>BAD BOY</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">author1</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #ff6b6b 0%, #ee5a52 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; font-weight: bold; text-align: center;">The<br>Crash<br>&amp; Burn</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">author2</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #ff6b6b 0%, #ee5a52 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; font-weight: bold; text-align: center;">The<br>Crash<br>&amp; Burn</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">author2</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #1a1a1a 0%, #333 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold; text-align: center;">HER<br>BETRAYAL</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">author3</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #1a1a1a 0%, #333 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: bold; text-align: center;">HER<br>BETRAYAL</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">author3</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #2c3e50 0%, #3498db 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: bold; text-align: center;">POWERFUL LEADERS<br>IN THE GALAXY</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">author4</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #2c3e50 0%, #3498db 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: bold; text-align: center;">POWERFUL LEADERS<br>IN THE GALAXY</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">author4</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #e74c3c 0%, #c0392b 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; font-weight: bold; text-align: center;">Scarlett<br>VELASQUEZ</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">author5</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #e74c3c 0%, #c0392b 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; font-weight: bold; text-align: center;">Scarlett<br>VELASQUEZ</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">author5</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #34495e 0%, #2c3e50 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; text-align: center;">Unexpectedly<br>Yours</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">author6</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #34495e 0%, #2c3e50 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; text-align: center;">Unexpectedly<br>Yours</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">author6</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #1a1a1a 0%, #333 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: bold; text-align: center;">His Broken<br>Addiction</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">author7</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #1a1a1a 0%, #333 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: bold; text-align: center;">His Broken<br>Addiction</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">author7</div>-->
 <!--                </div>-->
 <!--            </div>-->
-<!--            <div class="story-card">-->
-<!--                <div class="story-cover" style="background: linear-gradient(45deg, #95a5a6 0%, #7f8c8d 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; text-align: center;">TAMING<br>THE<br>RACER</div>-->
-<!--                <div class="story-info">-->
-<!--                    <div class="story-author">author8</div>-->
+<!--            <div class="library-card">-->
+<!--                <div class="library-cover" style="background: linear-gradient(45deg, #95a5a6 0%, #7f8c8d 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; text-align: center;">TAMING<br>THE<br>RACER</div>-->
+<!--                <div class="library-info">-->
+<!--                    <div class="library-author">author8</div>-->
 <!--                </div>-->
 <!--            </div>-->
         </div> 
@@ -591,7 +591,7 @@
 <script th:inline="javascript">
     // Add some interactive functionality
     document.addEventListener('DOMContentLoaded', function() {
-        // Smooth scrolling for story sections
+        // Smooth scrolling for library sections
         const storyScrolls = document.querySelectorAll('.story-scroll');
         storyScrolls.forEach(scroll => {
             scroll.addEventListener('wheel', function(e) {

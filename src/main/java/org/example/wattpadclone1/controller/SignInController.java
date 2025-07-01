@@ -42,7 +42,7 @@ public class SignInController {
                     System.out.println("story: "+x.getStory());
                     stories.add(x.getStory());
                 }
-                model.addAttribute("libraryStories",stories);
+                model.addAttribute("libraryStories",libraries);
 
                 List<Story> storiesNotInLb = new ArrayList<>();
                 List<Story>  storyList = homeService.getAllStories();

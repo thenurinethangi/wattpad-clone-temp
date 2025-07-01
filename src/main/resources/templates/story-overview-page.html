@@ -497,7 +497,7 @@
                     <i class="fas fa-eye stat-icon"></i>
                     <div>
                         <div class="stat-label">Reads</div>
-                        <div class="stat-value" th:text="${story.reads}">2</div>
+                        <div class="stat-value" th:text="${story.views}">2</div>
                     </div>
                 </div>
                 <div class="stat-item">
@@ -524,7 +524,18 @@
             </div>
 
             <div class="action-buttons">
-                <a class="start-reading-btn" th:href="@{/chapter/firstChapter(id=${chapters.get(0).getId()})}">
+                <!-- When chapters exist: show clickable link -->
+                <a class="start-reading-btn"
+                   th:if="${#lists.isEmpty(chapters) == false}"
+                   th:href="@{/chapter/firstChapter(id=${chapters[0].id})}">
+                    <i class="fas fa-book-open"></i>
+                    Start reading
+                </a>
+
+                <!-- When no chapters: show non-clickable button -->
+                <a class="start-reading-btn disabled"
+                   th:unless="${#lists.isEmpty(chapters) == false}"
+                   style="pointer-events: none; opacity: 0.6;">
                     <i class="fas fa-book-open"></i>
                     Start reading
                 </a>
@@ -539,7 +550,9 @@
     <div class="author-section">
         <div class="author-info">
             <div class="author-avatar"></div>
-            <div class="author-name" th:text="${story.user.username}">nethangi7</div>
+            <div class="author-name">
+                <a th:text="${story.user.username}" th:href="@{/user/profile/{id}(id=${story.user.id})}">nethangi7</a>
+            </div>
         </div>
 
         <div class="story-status">
@@ -579,7 +592,7 @@
             <div th:each="chapter : ${chapters}" class="chapter-item">
                 <div class="chapter-info">
 <!--                    <div class="chapter-status" th:classappend="${chapter.completed ? 'completed' : ''}"></div>-->
-                    <a th:href="@{/story/{storyId}/chapter/{chapterId}(storyId=${story.id}, chapterId=${chapter.id})}"
+                    <a th:href="@{/chapter/chapterById(id=${chapter.id})}"
                        th:text="${chapter.title}"
                        class="chapter-title">Temp Part 1</a>
 <!--                    <span th:if="${chapter.completed}" class="chapter-completion">100% Complete</span>-->

@@ -44,7 +44,26 @@
         }
 
         .story-info {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: 1em;
             flex: 1;
+        }
+
+        .story-info-left{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+
+        .story-info-right>div{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: 5px;
         }
 
         .story-title {
@@ -381,11 +400,22 @@
     <div class="header-content">
         <button class="back-btn">←</button>
         <div class="story-info">
-            <div class="story-title" th:text="${chapter.story.title}">Story Title</div>
-            <div class="story-author" th:text="'by ' + ${chapter.story.user.username}">by Author</div>
+            <div class="story-info-left">
+                <div class="story-title" th:text="${chapter.story.title}">Story Title</div>
+                <div class="story-author" th:text="'by ' + ${chapter.story.user.username}">by Author</div>
+            </div>
+            <div class="story-info-right">
+                <div class="dropdown-content">
+                    <a th:each="chapter : ${allChapters}"
+                       th:href="@{/chapter/chapterById(id=${chapter.id})}"
+                       th:text="${chapter.title}">
+                    </a>
+                </div>
+            </div>
         </div>
         <div class="header-actions">
             <button class="header-btn">+ Add</button>
+<!--            here should work as form when click a vote should send form with hide field chapter id and added to it a vote-->
             <button class="header-btn">★ Vote</button>
         </div>
     </div>
@@ -405,15 +435,15 @@
         <div class="chapter-stats">
             <div class="stat-item">
                 <span>👁</span>
-                <span>0</span>
+                <span th:text="${chapter.views}">0</span>
             </div>
             <div class="stat-item">
                 <span>⭐</span>
-                <span>0</span>
+                <span th:text="${chapter.votes}">0</span>
             </div>
             <div class="stat-item">
                 <span>💬</span>
-                <span>0</span>
+                <span th:text="${chapter.comments}">0</span>
             </div>
         </div>
 
@@ -421,7 +451,7 @@
             <img src="https://unsplash.com/photos/silhouette-of-trees-6dkoR1b4nt0"
                  alt="Author"
                  class="author-avatar">
-            <span th:text="'by ' + ${chapter.story.user.username}">by Author</span>
+            <a th:text="'by ' + ${chapter.story.user.username}" th:href="@{/user/profile/{id}(id=${chapter.story.user.id})}">by Author</a>
         </div>
     </div>
 
@@ -436,6 +466,36 @@
     <div th:unless="${paragraphs != null and !paragraphs.isEmpty()}">
         <p><i>No paragraphs found for this chapter.</i></p>
     </div>
+
+<!--    next chapter button-->
+    <div class="chapter-footer">
+        <a class="continue-btn"
+                th:if="${endOfTheStory == 'false'}" th:href="@{/chapter/nextChapter(storyId=${chapter.story.id},chapterId=${chapter.id})}">
+            Continue to next part
+        </a>
+
+        <button class="continue-btn"
+                th:unless="${endOfTheStory == 'false'}"
+                style="background: #999; cursor: not-allowed;"
+                disabled>
+            No more chapters
+        </button>
+
+        <div class="chapter-actions">
+            <button class="action-btn">+ Add</button>
+            <button class="action-btn">⭐ Vote</button>
+        </div>
+
+        <div class="social-share">
+            <button class="social-btn facebook">f</button>
+            <button class="social-btn twitter">🐦</button>
+            <button class="social-btn pinterest">📌</button>
+            <button class="social-btn tumblr">t</button>
+            <button class="social-btn embed">&lt;/&gt;</button>
+            <button class="social-btn" style="background: #666;">⋯</button>
+        </div>
+    </div>
+
 </div>
 </body>
 </html>

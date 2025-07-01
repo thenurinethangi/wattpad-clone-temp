@@ -26,4 +26,13 @@ public class Chapter {
     private LocalDateTime publishDate;
 
     private String coverImage;
+
+    @Column(name = "views")
+    private String views;
+
+    @Column(name = "votes")
+    private String votes;
+
+    @Column(name = "comments")
+    private String comments;
 }

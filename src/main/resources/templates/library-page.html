@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library - Wattpad Clone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background-color: white;
+            border-bottom: 1px solid #e6e6e6;
+            padding: 12px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6600;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            color: #ff6600;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 40px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+            background-color: #f8f8f8;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .write-btn {
+            background-color: transparent;
+            border: none;
+            color: #333;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .premium-btn {
+            background-color: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #333;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: #333;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tab {
+            padding: 10px 0;
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .tab.active {
+            color: #ff6600;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #ff6600;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .private-badge {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .story-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        .story-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .story-cover {
+            width: 100%;
+            height: 280px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .story-cover a{
+            width: 100%;
+            height: 100%;
+        }
+
+        .story-cover img{
+            width: 100%;
+            height: 100%;
+        }
+
+        .rank-badge {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: #333;
+            border: 2px solid white;
+        }
+
+        .story-info {
+            padding: 15px;
+        }
+
+        .story-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+            line-height: 1.3;
+        }
+
+        .story-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .author-name {
+            font-size: 14px;
+            color: #666;
+            text-decoration: none;
+        }
+
+        .author-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #ddd;
+        }
+
+        .story-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Story cover backgrounds */
+        .cover-1 { background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280"><rect fill="%23ff6b6b" width="200" height="280"/><text x="100" y="140" text-anchor="middle" fill="white" font-size="20" font-family="Arial">Love Through Space</text></svg>'); }
+        .cover-2 { background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280"><rect fill="%234ecdc4" width="200" height="280"/><text x="100" y="140" text-anchor="middle" fill="white" font-size="20" font-family="Arial">ROOM NO. 69</text></svg>'); }
+        .cover-3 { background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280"><rect fill="%2345b7d1" width="200" height="280"/><text x="100" y="140" text-anchor="middle" fill="white" font-size="18" font-family="Arial">Why Him...</text></svg>'); }
+        .cover-4 { background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280"><rect fill="%23a55eea" width="200" height="280"/><text x="100" y="140" text-anchor="middle" fill="white" font-size="18" font-family="Arial">LOVE IN THE MAFIA</text></svg>'); }
+        .cover-5 { background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280"><rect fill="%23fd79a8" width="200" height="280"/><text x="100" y="140" text-anchor="middle" fill="white" font-size="16" font-family="Arial">vampier professor</text></svg>'); }
+        .cover-6 { background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280"><rect fill="%23fdcb6e" width="200" height="280"/><text x="100" y="140" text-anchor="middle" fill="white" font-size="18" font-family="Arial">Omega\'s pain</text></svg>'); }
+        .cover-7 { background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280"><rect fill="%236c5ce7" width="200" height="280"/><text x="100" y="140" text-anchor="middle" fill="white" font-size="18" font-family="Arial">Wings of Love</text></svg>'); }
+        .cover-8 { background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280"><rect fill="%23a29bfe" width="200" height="280"/><text x="100" y="140" text-anchor="middle" fill="white" font-size="16" font-family="Arial">COLOUR PHOTO</text></svg>'); }
+        .cover-9 { background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280"><rect fill="%2300b894" width="200" height="280"/><text x="100" y="140" text-anchor="middle" fill="white" font-size="16" font-family="Arial">The Blessed Prince</text></svg>'); }
+        .cover-10 { background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280"><rect fill="%23636e72" width="200" height="280"/><text x="100" y="140" text-anchor="middle" fill="white" font-size="18" font-family="Arial">Mr.Mate</text></svg>'); }
+
+        @media (max-width: 768px) {
+            .stories-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 20px;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .search-container {
+                margin: 0 20px;
+            }
+
+            .page-title {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header-content">
+        <div class="logo">W</div>
+
+        <nav class="nav-menu">
+            <a href="#" class="nav-item">Browse</a>
+            <a href="#" class="nav-item">Community</a>
+        </nav>
+
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search">
+        </div>
+
+        <div class="user-actions">
+            <button class="write-btn">Write</button>
+            <button class="premium-btn">⚡ Try Premium</button>
+            <div class="user-avatar"></div>
+        </div>
+    </div>
+</header>
+
+<main class="main-content">
+    <h1 class="page-title">Library</h1>
+
+    <nav class="tabs">
+        <a href="#" class="tab active">Current reads</a>
+        <a href="#" class="tab">Archive</a>
+        <a href="#" class="tab">Reading lists</a>
+    </nav>
+
+    <div class="section-header">
+        <h2 class="section-title">All Stories</h2>
+        <span class="private-badge">🔒 Private</span>
+    </div>
+
+    <div class="stories-grid">
+        <!-- Story Card 1 -->
+        <div class="story-card" th:each="library : ${libraryList}">
+            <div class="story-cover">
+                <a th:href="@{/chapter/lastReadChapter(libraryId=${library.id})}"><img th:src="@{'/assets/image/' + ${library.story.imagePath}}"></a>
+            </div>
+            <div class="story-info">
+                <h3 class="story-title" th:text="${library.story.title}">Love Through Space</h3>
+                <div class="story-author">
+                    <div class="author-avatar"></div>
+                    <a href="#" class="author-name" th:text="${library.story.user.username}">lazy-kitty</a>
+                </div>
+                <div class="story-stats">
+                    <div class="stat-item">
+                        <span>👁</span>
+                        <span th:text="${library.story.views}">41.5K</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>⭐</span>
+                        <span th:text="${library.story.votes}">6.3K</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample static cards for demo -->
+<!--        <div class="story-card">-->
+<!--            <div class="story-cover cover-1">-->
+<!--                <div class="rank-badge">1</div>-->
+<!--            </div>-->
+<!--            <div class="story-info">-->
+<!--                <h3 class="story-title">Love Through Space</h3>-->
+<!--                <div class="story-author">-->
+<!--                    <div class="author-avatar"></div>-->
+<!--                    <a href="#" class="author-name">lazy-kitty</a>-->
+<!--                </div>-->
+<!--                <div class="story-stats">-->
+<!--                    <div class="stat-item">-->
+<!--                        <span>👁</span>-->
+<!--                        <span>41.5K</span>-->
+<!--                    </div>-->
+<!--                    <div class="stat-item">-->
+<!--                        <span>⭐</span>-->
+<!--                        <span>6.3K</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+</main>
+</body>
+</html>

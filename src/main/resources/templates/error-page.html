@@ -381,9 +381,9 @@
             <a th:href="@{/browse}" class="nav-link">Browse</a>
             <a th:href="@{/community}" class="nav-link">Community</a>
             <a th:href="@{/write}" class="nav-btn">Write</a>
-            <a th:href="@{/login}" class="nav-link" th:if="${!#authorization.expression('isAuthenticated()')}">Log In</a>
-            <a th:href="@{/signup}" class="nav-btn" th:if="${!#authorization.expression('isAuthenticated()')}">Sign Up</a>
-            <a th:href="@{/profile}" class="nav-link" th:if="${#authorization.expression('isAuthenticated()')}" th:text="${#authentication.name}">Profile</a>
+            <a th:href="@{/login}" class="nav-link">Log In</a>
+            <a th:href="@{/signup}" class="nav-btn">Sign Up</a>
+            <a th:href="@{/profile}" class="nav-link">Profile</a>
         </div>
     </div>
 </nav>
