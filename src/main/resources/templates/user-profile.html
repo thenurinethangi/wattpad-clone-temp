@@ -416,15 +416,25 @@
             margin-bottom: 15px;
         }
 
+        #reading-list-story-show-side{
+
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
         .reading-list-story {
             display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
             gap: 15px;
-            align-items: center;
+            align-items: flex-start;
         }
 
         .reading-list-cover {
-            width: 80px;
-            height: 106px;
+            width: 120px;
+            height: 160px;
             border-radius: 6px;
             object-fit: cover;
         }
@@ -608,53 +618,39 @@
         </section>
 
         <!-- Reading Lists Section -->
-<!--        <section class="reading-list-section">-->
-<!--            <div class="reading-list-header">-->
-<!--                <h2 class="reading-list-title" th:text="${user.readingListsCount + ' Reading List'}">1 Reading List</h2>-->
-<!--                <div>-->
-<!--                    <button style="background: none; border: none; font-size: 20px; color: #666;">+</button>-->
-<!--                    <button style="background: none; border: none; font-size: 20px; color: #666;">⚙️</button>-->
-<!--                </div>-->
-<!--            </div>-->
+        <section class="reading-list-section">
+            <div class="reading-list-header" th:if="${isReadingListExist}">
+                <h2 class="reading-list-title" th:text="${readingListCount+' Reading List'}">1 Reading List</h2>
+                <div>
+                    <button style="background: none; border: none; font-size: 20px; color: #666;">+</button>
+                    <button style="background: none; border: none; font-size: 20px; color: #666;">⚙️</button>
+                </div>
+            </div>
 
-<!--            &lt;!&ndash; Reading Lists &ndash;&gt;-->
-<!--            <div th:each="readingList : ${user.readingLists}" class="reading-list-item">-->
-<!--                <h3 class="reading-list-name" th:text="${readingList.name + '''s Reading List'}">nethangi7's Reading List</h3>-->
-<!--                <p class="reading-list-info" th:text="'Reading List • ' + ${readingList.storiesCount + ' Story'}">Reading List • 1 Story</p>-->
+            <!--       Reading Lists -->
+            <div th:if="${isReadingListExist}" th:each="readingList : ${readingLists}" class="reading-list-item">
+                <h3 class="reading-list-name" th:text="${readingList.name}">nethangi7's Reading List</h3>
+                <p class="reading-list-info" th:text="'Reading List • ' + ${readingList.storyCount + ' Story'}">Reading List • 1 Story</p>
 
-<!--                <div th:if="${readingList.stories != null and !readingList.stories.isEmpty()}" class="reading-list-story">-->
-<!--                    <img th:src="${readingList.stories[0].coverUrl}" src="https://via.placeholder.com/80x106/333333/ffffff?text=STIGMA" alt="Story Cover" class="reading-list-cover">-->
+                <div id="reading-list-story-show-side">
+                    <div  th:each="readingListStory : ${readingList.readingListStories}" class="reading-list-story">
+                        <a th:href="@{/story/overview(id=${readingListStory.story.id})}"><img th:src="@{'/assets/image/' + ${readingListStory.story.imagePath}}" alt="Story Cover" class="reading-list-cover"></a>
 
-<!--                    <div class="reading-list-story-info">-->
-<!--                        <h4 th:text="${readingList.stories[0].title}">STIGMA (Taekook)</h4>-->
-<!--                        <div class="reading-list-stats">-->
-<!--                            <span><i class="fas fa-eye"></i><span th:text="${readingList.stories[0].views}">57.8K</span></span>-->
-<!--                            <span><i class="fas fa-star"></i><span th:text="${readingList.stories[0].votes}">10.8K</span></span>-->
-<!--                            <span><i class="fas fa-list"></i><span th:text="${readingList.stories[0].parts}">48</span></span>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            &lt;!&ndash; Default reading list when none exist &ndash;&gt;-->
-<!--            <div th:if="${user.readingLists == null or user.readingLists.isEmpty()}" class="reading-list-item">-->
-<!--                <h3 class="reading-list-name">nethangi7's Reading List</h3>-->
-<!--                <p class="reading-list-info">Reading List • 1 Story</p>-->
-
-<!--                <div class="reading-list-story">-->
-<!--                    <img src="https://via.placeholder.com/80x106/333333/ffffff?text=STIGMA" alt="Story Cover" class="reading-list-cover">-->
-
-<!--                    <div class="reading-list-story-info">-->
-<!--                        <h4>STIGMA (Taekook)</h4>-->
-<!--                        <div class="reading-list-stats">-->
-<!--                            <span><i class="fas fa-eye"></i>57.8K</span>-->
-<!--                            <span><i class="fas fa-star"></i>10.8K</span>-->
-<!--                            <span><i class="fas fa-list"></i>48</span>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </section>-->
+                        <div class="reading-list-story-info">
+                            <a th:href="@{/story/overview(id=${readingListStory.story.id})}"><h4 th:text="${readingListStory.story.title}">STIGMA (Taekook)</h4></a>
+                            <div class="reading-list-stats">
+                                <span><i class="fas fa-eye"></i><span th:text="${readingListStory.story.views}">57.8K</span></span>
+                                <span><i class="fas fa-star"></i><span th:text="${readingListStory.story.votes}">10.8K</span></span>
+                                <span><i class="fas fa-list"></i><span th:text="${readingListStory.story.parts}">48</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:unless="${isReadingListExist}">
+                <button style="background-color: orangered; padding: 10px; border: none; border-radius: 5px;">Create New Reading List</button>
+            </div>
+        </section>
     </main>
 </div>
 </body>

@@ -416,15 +416,25 @@
       margin-bottom: 15px;
     }
 
+    #reading-list-story-show-side{
+
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
     .reading-list-story {
       display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
       gap: 15px;
-      align-items: center;
+      align-items: flex-start;
     }
 
     .reading-list-cover {
-      width: 80px;
-      height: 106px;
+      width: 120px;
+      height: 160px;
       border-radius: 6px;
       object-fit: cover;
     }
@@ -567,6 +577,8 @@
       <a href="#" class="tab active">About</a>
       <a href="#" class="tab">Conversations</a>
       <a href="#" class="tab">Following</a>
+
+      <button id="follow-btn" th:data-url="@{/follow(id=${user.id})}" th:data="${user.id}" style="background-color: #3b5998; border: none; border-radius: 7px; padding: 10px; color: rgba(255,255,255,0.7)">Follow</button>
       <button style="background: #ff6900; color: white; border: none; padding: 6px 12px; border-radius: 50%; margin-left: auto;">💬</button>
       <button style="background: none; border: none; font-size: 20px; color: #666;">+</button>
     </nav>
@@ -587,8 +599,7 @@
         </a>
 
         <div class="story-info">
-          <a th:href="@{/story/overview(id=${story.id})}"><h3 class="story-title" th:text="${story.title}">Temp</h3></a>
-          <p class="story-description" th:text="${story.description}">Sample Story for Development Purposes(Wattpad Clone Web Application development)</p>
+               <p class="story-description" th:text="${story.description}">Sample Story for Development Purposes(Wattpad Clone Web Application development)</p>
 
 <!--          //th:each="tag : ${story.tags}"-->
           <div class="story-tags">
@@ -608,8 +619,8 @@
 
     <!-- Reading Lists Section -->
     <section class="reading-list-section">
-      <div class="reading-list-header">
-        <h2 class="reading-list-title">1 Reading List</h2>
+      <div class="reading-list-header" th:if="${isReadingListExist}">
+        <h2 class="reading-list-title" th:text="${readingListCount+' Reading List'}">1 Reading List</h2>
         <div>
           <button style="background: none; border: none; font-size: 20px; color: #666;">+</button>
           <button style="background: none; border: none; font-size: 20px; color: #666;">⚙️</button>
@@ -617,19 +628,21 @@
       </div>
 
 <!--       Reading Lists -->
-      <div th:if="${isReadingListExist}" th:each="readingList : ${user.readingLists}" class="reading-list-item">
-        <h3 class="reading-list-name" th:text="${readingList.name + '''s Reading List'}">nethangi7's Reading List</h3>
-        <p class="reading-list-info" th:text="'Reading List • ' + ${readingList.storiesCount + ' Story'}">Reading List • 1 Story</p>
+      <div th:if="${isReadingListExist}" th:each="readingList : ${readingLists}" class="reading-list-item">
+        <h3 class="reading-list-name" th:text="${readingList.name}">nethangi7's Reading List</h3>
+        <p class="reading-list-info" th:text="'Reading List • ' + ${readingList.storyCount + ' Story'}">Reading List • 1 Story</p>
 
-        <div th:if="${readingList.stories != null and !readingList.stories.isEmpty()}" class="reading-list-story">
-          <img th:src="${readingList.stories[0].coverUrl}" src="https://via.placeholder.com/80x106/333333/ffffff?text=STIGMA" alt="Story Cover" class="reading-list-cover">
+        <div id="reading-list-story-show-side">
+          <div  th:each="readingListStory : ${readingList.readingListStories}" class="reading-list-story">
+            <a th:href="@{/story/overview(id=${readingListStory.story.id})}"><img th:src="@{'/assets/image/' + ${readingListStory.story.imagePath}}" alt="Story Cover" class="reading-list-cover"></a>
 
-          <div class="reading-list-story-info">
-            <h4 th:text="${readingList.stories[0].title}">STIGMA (Taekook)</h4>
-            <div class="reading-list-stats">
-              <span><i class="fas fa-eye"></i><span th:text="${readingList.stories[0].views}">57.8K</span></span>
-              <span><i class="fas fa-star"></i><span th:text="${readingList.stories[0].votes}">10.8K</span></span>
-              <span><i class="fas fa-list"></i><span th:text="${readingList.stories[0].parts}">48</span></span>
+            <div class="reading-list-story-info">
+              <a th:href="@{/story/overview(id=${readingListStory.story.id})}"><h4 th:text="${readingListStory.story.title}">STIGMA (Taekook)</h4></a>
+              <div class="reading-list-stats">
+                <span><i class="fas fa-eye"></i><span th:text="${readingListStory.story.views}">57.8K</span></span>
+                <span><i class="fas fa-star"></i><span th:text="${readingListStory.story.votes}">10.8K</span></span>
+                <span><i class="fas fa-list"></i><span th:text="${readingListStory.story.parts}">48</span></span>
+              </div>
             </div>
           </div>
         </div>
@@ -640,5 +653,65 @@
     </section>
   </main>
 </div>
+<script th:inline="javascript">
+
+    const username = /*[[${user.username}]]*/ 'default';
+    const id = /*[[${user.id}]]*/ 'default';
+
+    let followBtn1 = document.querySelectorAll('#follow-btn')[0];
+
+    //when load set follow btn text
+    fetch("/follow/status?id="+id)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then(data => {
+              console.log("Status:", data.status);
+              console.log("Message:", data.message);
+              if(data.message==='Follow'){
+                followBtn1.textContent = 'Followed';
+              }
+              else if(data.message==='myAccount'){
+                followBtn1.style.display = 'none';
+              }
+              else{
+                followBtn1.textContent = 'Follow';
+              }
+            })
+            .catch(error => {
+              console.error("Fetch error:", error);
+            });
+
+
+    //when click the follow btn
+    let followBtn = document.querySelectorAll('#follow-btn')[0];
+
+    if (followBtn) {
+      followBtn.addEventListener('click',function (){
+        const url = this.dataset.url;
+
+        fetch(url)
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                  }
+                  return response.json();
+                })
+                .then(data => {
+                  console.log("Status:", data.status);
+                  console.log("Message:", data.message);
+                  followBtn.textContent = data.message;
+                })
+                .catch(error => {
+                  console.error("Fetch error:", error);
+                });
+      });
+    } else {
+      console.warn("follow-btn not found!");
+    }
+</script>
 </body>
 </html>

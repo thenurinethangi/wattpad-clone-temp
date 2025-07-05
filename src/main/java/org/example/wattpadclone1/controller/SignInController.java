@@ -1,5 +1,6 @@
 package org.example.wattpadclone1.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.example.wattpadclone1.entity.Library;
 import org.example.wattpadclone1.entity.Story;
 import org.example.wattpadclone1.entity.User;
@@ -25,7 +26,7 @@ public class SignInController {
     private HomeService homeService;
 
     @PostMapping
-    public String authentication(@ModelAttribute User user, Model model){
+    public String authentication(@ModelAttribute User user, Model model,HttpSession session){
 
         System.out.println(user);
         User user1 = signInService.isExist(user.getUsername());
@@ -62,6 +63,7 @@ public class SignInController {
                 System.out.println(storiesNotInLb);
                 model.addAttribute("storiesNotInLb",storiesNotInLb);
 
+                session.setAttribute("currentUser",user1);
                 return "home-page";
             }
 

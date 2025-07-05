@@ -3,16 +3,14 @@ package org.example.wattpadclone1.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
 @Entity
-@Table(name = "reading_list")
-public class ReadingList {
+@Table(name = "follow")
+public class Follow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,12 +21,6 @@ public class ReadingList {
     private User user;
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(name = "story_count", nullable = false)
-    private int storyCount = 0;
-
-    @Column(name = "created_date", updatable = false)
-    private LocalDateTime createdDate = LocalDateTime.now();
+    private Integer count = 0;
 }
 
