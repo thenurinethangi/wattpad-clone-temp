@@ -21,4 +21,14 @@ public class LibraryService {
     public List<Library> getAllLibraryByUser(User user) {
         return libraryRepository.findAllByUser(user);
     }
+
+    public Library checkIsThisStoryInCurrentUserLibraryOrNot(Library library) {
+
+        return libraryRepository.findByUserAndStory(library.getUser(),library.getStory());
+    }
+
+    public Library changeLastReadChapter(Library library1) {
+
+        return libraryRepository.save(library1);
+    }
 }

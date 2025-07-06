@@ -28,4 +28,9 @@ public class ChapterService {
 
         return chapterRepository.save(chapter);
     }
+
+    public Chapter increaseViews(Chapter chapter) {
+
+        return chapterRepository.save(chapter);
+    }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.example.wattpadclone1.dto.ChapterMediaDTO;
 import org.example.wattpadclone1.entity.*;
 import org.example.wattpadclone1.service.*;
@@ -38,13 +39,28 @@ public class ChapterController {
     private ChapterMediaService chapterMediaService;
 
     @GetMapping("firstChapter")
-    public String getFirstChapterOfStory(@RequestParam String id, Model model){
+    public String getFirstChapterOfStory(@RequestParam String id, Model model,HttpSession session){
 
         Chapter chapter = chapterService.getChapterById(Integer.parseInt(id));
 
         if(chapter==null){
             System.out.println("no chapters in this story");
             return "error-page";
+        }
+
+        Object sessionChapObject = session.getAttribute(String.valueOf(chapter.getId()));
+        Chapter chap = null;
+        if (sessionChapObject instanceof Chapter) {
+            chap = (Chapter) sessionChapObject;
+        }
+
+        if(chap==null){
+            //increase views of the chapter
+            int views = Integer.parseInt(chapter.getViews());
+            views++;
+            chapter.setViews(String.valueOf(views));
+            Chapter chapter1 = chapterService.increaseViews(chapter);
+            session.setAttribute(String.valueOf(chapter.getId()),chapter);
         }
 
         List<Paragraph> paragraphList = paragraphService.getAllParagraphsOfSelectedChapter(chapter);
@@ -66,13 +82,28 @@ public class ChapterController {
     }
 
     @GetMapping("chapterById")
-    public String getChapterById(@RequestParam String id, Model model){
+    public String getChapterById(@RequestParam String id, Model model, HttpSession session){
 
         Chapter chapter = chapterService.getChapterById(Integer.parseInt(id));
 
         if(chapter==null){
             System.out.println("no chapters in this story");
             return "error-page";
+        }
+
+        Object sessionChapObject = session.getAttribute(String.valueOf(chapter.getId()));
+        Chapter chap = null;
+        if (sessionChapObject instanceof Chapter) {
+            chap = (Chapter) sessionChapObject;
+        }
+
+        if(chap==null){
+            //increase views of the chapter
+            int views = Integer.parseInt(chapter.getViews());
+            views++;
+            chapter.setViews(String.valueOf(views));
+            Chapter chapter1 = chapterService.increaseViews(chapter);
+            session.setAttribute(String.valueOf(chapter.getId()),chapter);
         }
 
         List<Paragraph> paragraphList = paragraphService.getAllParagraphsOfSelectedChapter(chapter);
@@ -86,6 +117,24 @@ public class ChapterController {
             model.addAttribute("endOfTheStory","false");
         }
 
+        //find last read chapter no
+        int chapterSequenceNo = 0;
+        for (Chapter x : chapterList){
+            chapterSequenceNo++;
+            if(x.getId()==chapter.getId()){
+                break;
+            }
+        }
+
+        //last read chapter update logic
+        User user = (User) session.getAttribute("currentUser");
+        Library library = new Library(user,chapter.getStory());
+        Library library1 = libraryService.checkIsThisStoryInCurrentUserLibraryOrNot(library);
+        if(library1!=null){
+            library1.setLastReadPage(chapterSequenceNo);
+            Library library2 = libraryService.changeLastReadChapter(library1);
+        }
+
         model.addAttribute("allChapters",chapterList);
         model.addAttribute("chapter",chapter);
         model.addAttribute("paragraphs",paragraphList);
@@ -94,7 +143,7 @@ public class ChapterController {
     }
 
     @GetMapping("nextChapter")
-    public String getNextChapter(@RequestParam String storyId, @RequestParam String chapterId, Model model){
+    public String getNextChapter(@RequestParam String storyId, @RequestParam String chapterId, Model model,HttpSession session){
 
         Story story = storyService.getStoryDetailsById(Integer.parseInt(storyId));
 
@@ -112,6 +161,21 @@ public class ChapterController {
             }
         }
 
+        Object sessionChapObject = session.getAttribute(String.valueOf(nextChapter.getId()));
+        Chapter chap = null;
+        if (sessionChapObject instanceof Chapter) {
+            chap = (Chapter) sessionChapObject;
+        }
+
+        if(chap==null){
+            //increase views of the chapter
+            int views = Integer.parseInt(nextChapter.getViews());
+            views++;
+            nextChapter.setViews(String.valueOf(views));
+            Chapter chapter1 = chapterService.increaseViews(nextChapter);
+            session.setAttribute(String.valueOf(nextChapter.getId()),nextChapter);
+        }
+
         List<Paragraph> paragraphList = paragraphService.getAllParagraphsOfSelectedChapter(nextChapter);
 
         if(chapterList.getLast().getId()==nextChapter.getId()){
@@ -119,6 +183,24 @@ public class ChapterController {
         }
         else{
             model.addAttribute("endOfTheStory","false");
+        }
+
+        //find last read chapter no
+        int chapterSequenceNo = 0;
+        for (Chapter x : chapterList){
+            chapterSequenceNo++;
+            if(x.getId()==nextChapter.getId()){
+                break;
+            }
+        }
+
+        //last read chapter update logic
+        User user = (User) session.getAttribute("currentUser");
+        Library library = new Library(user,nextChapter.getStory());
+        Library library1 = libraryService.checkIsThisStoryInCurrentUserLibraryOrNot(library);
+        if(library1!=null){
+            library1.setLastReadPage(chapterSequenceNo);
+            Library library2 = libraryService.changeLastReadChapter(library1);
         }
 
         model.addAttribute("allChapters",chapterList);
@@ -129,14 +211,35 @@ public class ChapterController {
     }
 
     @GetMapping("lastReadChapter")
-    public String getLastReadChapter(@RequestParam String libraryId, Model model){
+    public String getLastReadChapter(@RequestParam String libraryId, Model model,HttpSession session){
 
         Library library = libraryService.getLibraryById(Integer.parseInt(libraryId));
 
         List<Chapter> chapterList = chapterService.getChaptersListByStory(library.getStory());
 
         int lastReadChapterNo = library.getLastReadPage();
-        Chapter lastReadChapter = chapterList.get(lastReadChapterNo-1);
+        Chapter lastReadChapter = null;
+        if(lastReadChapterNo>0 && lastReadChapterNo<=chapterList.size()) {
+            lastReadChapter = chapterList.get(lastReadChapterNo - 1);
+        }
+        else{
+            return "error-page";
+        }
+
+        Object sessionChapObject = session.getAttribute(String.valueOf(lastReadChapter.getId()));
+        Chapter chap = null;
+        if (sessionChapObject instanceof Chapter) {
+            chap = (Chapter) sessionChapObject;
+        }
+
+        if(chap==null){
+            //increase views of the chapter
+            int views = Integer.parseInt(lastReadChapter.getViews());
+            views++;
+            lastReadChapter.setViews(String.valueOf(views));
+            Chapter chapter1 = chapterService.increaseViews(lastReadChapter);
+            session.setAttribute(String.valueOf(lastReadChapter.getId()),lastReadChapter);
+        }
 
         List<Paragraph> paragraphList = paragraphService.getAllParagraphsOfSelectedChapter(lastReadChapter);
 

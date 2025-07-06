@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Library {
 
     @Id
@@ -29,12 +30,8 @@ public class Library {
     @Column(name = "last_read_page", columnDefinition = "INT DEFAULT 1")
     private int lastReadPage = 1;
 
-    @Override
-    public String toString() {
-        return "Library{" +
-                "id=" + id +
-                ", savedAt=" + savedAt +
-                ", lastReadPage=" + lastReadPage +
-                '}';
+    public Library(User user, Story story) {
+        this.user = user;
+        this.story = story;
     }
 }
