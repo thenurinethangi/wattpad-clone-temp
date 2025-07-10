@@ -55,10 +55,10 @@ public class Story {
     private int mature = 0;
 
     @Column(name = "views")
-    private String views;
+    private String views = "0";
 
     @Column(name = "votes")
-    private String votes;
+    private String votes = "0";
 
     @Column(name = "published_or_draft")
     private String publishedOrDraft = "published";

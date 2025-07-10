@@ -60,6 +60,13 @@ public class ChapterController {
             views++;
             chapter.setViews(String.valueOf(views));
             Chapter chapter1 = chapterService.increaseViews(chapter);
+
+            Story story = chapter.getStory();
+            int storyViews = Integer.parseInt(story.getViews());
+            storyViews++;
+            story.setViews(String.valueOf(storyViews));
+            Story story1 = storyService.increaseStoryViews(story);
+
             session.setAttribute(String.valueOf(chapter.getId()),chapter);
         }
 
@@ -74,6 +81,9 @@ public class ChapterController {
             model.addAttribute("endOfTheStory","false");
         }
 
+        User user = (User) session.getAttribute("currentUser");
+
+        model.addAttribute("currentUser",user);
         model.addAttribute("allChapters",chapterList);
         model.addAttribute("chapter",chapter);
         model.addAttribute("paragraphs",paragraphList);
@@ -103,6 +113,13 @@ public class ChapterController {
             views++;
             chapter.setViews(String.valueOf(views));
             Chapter chapter1 = chapterService.increaseViews(chapter);
+
+            Story story = chapter.getStory();
+            int storyViews = Integer.parseInt(story.getViews());
+            storyViews++;
+            story.setViews(String.valueOf(storyViews));
+            Story story1 = storyService.increaseStoryViews(story);
+
             session.setAttribute(String.valueOf(chapter.getId()),chapter);
         }
 
@@ -135,6 +152,7 @@ public class ChapterController {
             Library library2 = libraryService.changeLastReadChapter(library1);
         }
 
+        model.addAttribute("currentUser",user);
         model.addAttribute("allChapters",chapterList);
         model.addAttribute("chapter",chapter);
         model.addAttribute("paragraphs",paragraphList);
@@ -173,6 +191,13 @@ public class ChapterController {
             views++;
             nextChapter.setViews(String.valueOf(views));
             Chapter chapter1 = chapterService.increaseViews(nextChapter);
+
+            Story chapterStory = nextChapter.getStory();
+            int storyViews = Integer.parseInt(chapterStory.getViews());
+            storyViews++;
+            chapterStory.setViews(String.valueOf(storyViews));
+            Story story1 = storyService.increaseStoryViews(chapterStory);
+
             session.setAttribute(String.valueOf(nextChapter.getId()),nextChapter);
         }
 
@@ -203,6 +228,7 @@ public class ChapterController {
             Library library2 = libraryService.changeLastReadChapter(library1);
         }
 
+        model.addAttribute("currentUser",user);
         model.addAttribute("allChapters",chapterList);
         model.addAttribute("chapter",nextChapter);
         model.addAttribute("paragraphs",paragraphList);
@@ -238,6 +264,13 @@ public class ChapterController {
             views++;
             lastReadChapter.setViews(String.valueOf(views));
             Chapter chapter1 = chapterService.increaseViews(lastReadChapter);
+
+            Story story = lastReadChapter.getStory();
+            int storyViews = Integer.parseInt(story.getViews());
+            storyViews++;
+            story.setViews(String.valueOf(storyViews));
+            Story story1 = storyService.increaseStoryViews(story);
+
             session.setAttribute(String.valueOf(lastReadChapter.getId()),lastReadChapter);
         }
 
@@ -250,6 +283,9 @@ public class ChapterController {
             model.addAttribute("endOfTheStory","false");
         }
 
+        User user = (User) session.getAttribute("currentUser");
+
+        model.addAttribute("currentUser",user);
         model.addAttribute("allChapters",chapterList);
         model.addAttribute("chapter",lastReadChapter);
         model.addAttribute("paragraphs",paragraphList);

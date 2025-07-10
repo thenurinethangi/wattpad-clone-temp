@@ -30,4 +30,9 @@ public class StoryService {
 
         return storyRepository.findAllByUser(user);
     }
+
+    public Story increaseStoryViews(Story story) {
+
+        return storyRepository.save(story);
+    }
 }

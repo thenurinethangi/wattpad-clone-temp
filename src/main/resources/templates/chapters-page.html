@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="'Chapter: ' + ${chapter.title}">Chapter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <style>
         * {
             margin: 0;
@@ -368,6 +371,17 @@
             font-size: 12px;
         }
 
+        .comment-input-box{
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .send-icon{
+
+            transform: translate(-37px,-11px);
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
@@ -416,7 +430,7 @@
         <div class="header-actions">
             <button class="header-btn">+ Add</button>
 <!--            here should work as form when click a vote should send form with hide field chapter id and added to it a vote-->
-            <button class="header-btn">★ Vote</button>
+            <button class="header-btn" id="vote-btn">★ Vote</button>
         </div>
     </div>
 </div>
@@ -458,13 +472,34 @@
 <!--    <h1 class="chapter-title" th:text="${chapter.title}">Chapter Title</h1>-->
 
     <div th:if="${paragraphs != null and !paragraphs.isEmpty()}">
-        <div th:each="para : ${paragraphs}">
-            <p class="paragraph" th:text="${para.content}">Sample paragraph.</p>
+        <div th:each="para : ${paragraphs}" class="content-box" style="position: relative;">
+            <p class="paragraph" th:text="${para.content}" th:data="${para.id}">Sample paragraph.</p>
+            <i class="fa-solid fa-comment" style="position: absolute; bottom: 0; right: 0; visibility: hidden;" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight"></i>
         </div>
     </div>
 
     <div th:unless="${paragraphs != null and !paragraphs.isEmpty()}">
         <p><i>No paragraphs found for this chapter.</i></p>
+    </div>
+
+<!--    //comment panel-->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header">
+            <h5 id="offcanvasRightLabel" th:text="${chapter.title}">Offcanvas right</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="paragraph-content-box">
+                <input class="hide-input-for-store-paragraph-id" style="display: none">
+                <p class="paragraph-content">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto asperiores, aspernatur assumenda excepturi facilis fuga, fugiat iure laborum minima minus nisi perspiciatis possimus quis quo repellat rerum veritatis vitae!</p>
+            </div>
+            <div class="comment-input-box">
+                <input type="text" placeholder="Write a comment..." class="comment-input">
+                <i class="fa-solid fa-paper-plane send-icon"></i>
+            </div>
+            <div class="comments-box" style="display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 20px;">
+            </div>
+        </div>
     </div>
 
 <!--    next chapter button-->
@@ -497,5 +532,342 @@
     </div>
 
 </div>
+<script src="/assets/lib/jquery-3.7.1.min.js"></script>
+<script th:inline="javascript">
+
+    //when page load this will run
+    const chapterId = /*[[${chapter.id}]]*/ 'default';
+
+    fetch('/vote/check?chapterId='+chapterId)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Status:", data.status);
+            console.log("Message:", data.message);
+
+            if(data.message==='voted'){
+                voteBtn.style.backgroundColor = '#DD2C00';
+            }
+            else{
+                voteBtn.style.backgroundColor = '#ff6b35';
+            }
+
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+        });
+
+
+
+    //vote btn
+    let voteBtn = document.getElementById('vote-btn');
+    voteBtn.addEventListener('click',function (event) {
+
+        const chapterId = /*[[${chapter.id}]]*/ 'default';
+
+        fetch('/vote/add?chapterId='+chapterId)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Status:", data.status);
+                console.log("Message:", data.message);
+
+                if(data.message==='add vote'){
+                    voteBtn.style.backgroundColor = '#DD2C00';
+                }
+                else{
+                    voteBtn.style.backgroundColor = '#ff6b35';
+                }
+
+            })
+            .catch(error => {
+                console.error("Fetch error:", error);
+            });
+
+    });
+
+
+
+    //when clicked on comment icon
+    // let contextBoxes = document.getElementsByClassName('content-box');
+    // Array.from(contextBoxes).forEach(box => {
+    //     box.addEventListener('mouseenter', () => {
+    //         console.log('Hovered on content box');
+    //         let i = document.createElement("i");
+    //         i.setAttribute('data-bs-toggle','offcanvas');
+    //         i.setAttribute('data-bs-target','#offcanvasRight');
+    //         i.setAttribute('aria-controls','offcanvasRight');
+    //
+    //         let childrenElements = box.children;
+    //         let paragraph = childrenElements[0];
+    //         let paragraphId = paragraph.getAttribute('data');
+    //
+    //         // set model to paragraph
+    //         let paragraphContent = document.getElementsByClassName('paragraph-content');
+    //         paragraphContent[0].textContent = paragraph.textContent;
+    //
+    //         //set paragraph id to hidden input field
+    //         let paragraphIdStoreInput = document.getElementsByClassName('hide-input-for-store-paragraph-id')[0];
+    //         paragraphIdStoreInput.value = paragraphId;
+    //
+    //         loadOldCommentsOfSelectedParagraph(paragraphId);
+    //
+    //         i.className = "fa-solid fa-comment";
+    //         box.style.position = 'relative';
+    //         i.style.position = 'absolute';
+    //         i.style.right = '0';
+    //         i.style.bottom = '0';
+    //         box.append(i);
+    //     });
+    //
+    //     box.addEventListener('mouseleave', () => {
+    //         let childrenElements = box.children;
+    //         for (let i = 1; i < childrenElements.length; i++) {
+    //             box.removeChild(childrenElements[i]);
+    //         }
+    //     });
+    // });
+
+
+    //when hover show comment icon
+    let contextBoxes = document.getElementsByClassName('content-box');
+    Array.from(contextBoxes).forEach(box => {
+        box.addEventListener('mouseenter', () => {
+            console.log('Hovered on content box');
+            let i = document.createElement("i");
+            i.setAttribute('data-bs-toggle','offcanvas');
+            i.setAttribute('data-bs-target','#offcanvasRight');
+            i.setAttribute('aria-controls','offcanvasRight');
+
+            let childrenElements = box.children;
+            let paragraph = childrenElements[0];
+            let paragraphId = paragraph.getAttribute('data');
+
+            // set model to paragraph
+            let paragraphContent = document.getElementsByClassName('paragraph-content');
+            paragraphContent[0].textContent = paragraph.textContent;
+
+            //set paragraph id to hidden input field
+            let paragraphIdStoreInput = document.getElementsByClassName('hide-input-for-store-paragraph-id')[0];
+            paragraphIdStoreInput.value = paragraphId;
+
+            loadOldCommentsOfSelectedParagraph(paragraphId);
+
+            i.className = "fa-solid fa-comment";
+            box.style.position = 'relative';
+            i.style.position = 'absolute';
+            i.style.right = '0';
+            i.style.bottom = '0';
+            box.append(i);
+        });
+
+        box.addEventListener('mouseleave', () => {
+            let childrenElements = box.children;
+            for (let i = 1; i < childrenElements.length; i++) {
+                box.removeChild(childrenElements[i]);
+            }
+        });
+    });
+
+
+
+    //when hover show comment icon 2
+    let contextBoxes = document.getElementsByClassName('content-box');
+    Array.from(contextBoxes).forEach(box => {
+
+        let childrenElements = box.children;
+        let paragraph = childrenElements[0];
+        let paragraphId = paragraph.getAttribute('data');
+
+        let commentIcon = childrenElements[1];
+
+        fetch('/comment/count?paragraphId='+paragraphId)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(text => {
+                let count = Number(text);
+                if(count>0){
+                    commentIcon.style.visibility = 'visible';
+                    let noOfComment = document.createElement('p');
+                    noOfComment.textContent = count;
+                    noOfComment.style.position = 'absolute';
+                    noOfComment.style.right = '0';
+                    noOfComment.style.bottom = '0';
+                    box.append(noOfComment);
+                }
+                else{
+                    commentIcon.style.visibility = 'hidden';
+                }
+                console.log('Received data:', count);
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+            });
+    });
+
+
+
+    //add comment to paragraph
+    let sendIcon = document.getElementsByClassName('send-icon')[0];
+    sendIcon.addEventListener('click',function (event) {
+
+        let commentInput = document.getElementsByClassName('comment-input')[0];
+        let inputText = commentInput.value;
+        if(inputText.trim()===''){
+            return;
+        }
+        commentInput.value = '';
+
+        const chapterId = /*[[${chapter.id}]]*/ 'default';
+        const currentUserId = /*[[${currentUser.id}]]*/ 'default';
+        let paragraphIdStoreInput = document.getElementsByClassName('hide-input-for-store-paragraph-id')[0];
+        let paragraphId = paragraphIdStoreInput.value;
+
+        fetch('/comment/put', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                chapterId: chapterId,
+                currentUserId: currentUserId,
+                paragraphId: paragraphId,
+                commentMessage: inputText
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                loadOldCommentsOfSelectedParagraph(paragraphId);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+    });
+
+
+    function loadOldCommentsOfSelectedParagraph(paragraphId) {
+
+        let paragraphCommentsLoadArea = $('.comments-box');
+        paragraphCommentsLoadArea.empty();
+
+        fetch('/comment/load?paragraphId='+paragraphId)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+
+                console.log(data)
+                for (let i = 0; i < data.length; i++) {
+                 
+                    let comment = data[i];
+                    console.log(comment)
+
+                    const authorId = /*[[${chapter.story.user.id}]]*/ 'default';
+                    let authorTag = ``;
+                    if(authorId==comment.user.id){
+                        authorTag = `<p style="background-color: darkorange; padding: 3px; border-radius: 10px;">Writer</p>`
+                    }
+
+                    let likesAmount = ``;
+                    if(comment.likes!=0){
+                        likesAmount = `<p style="font-size: 10px;">${comment.likes}</p>`
+                    }
+
+                    let replyCount = ``;
+                    if(comment.replyCount!=0){
+                        likesAmount = `<p style="font-size: 10px;">View ${comment.replyCount} Replies</p>`
+                    }
+
+                    const currentUserId = /*[[${currentUser.id}]]*/ 'default';
+                    let likeIcon = ``;
+                    if(comment.isCurrentUserLiked==1){
+                        likeIcon = `<i class="fa-solid fa-heart like-icon" data-comment-id="${comment.id}" style="color: firebrick;"></i>`
+                    }
+                    else{
+                        likeIcon = `<i class="fa-regular fa-heart like-icon" data-comment-id="${comment.id}"></i>`
+                    }
+
+                    let singleComment = `<div style="display: flex; justify-content: flex-start; align-items: flex-start; gap: 5px;">
+                                            <div>
+                                                <img src="assets/image/${comment.user.imagePath}" width="22px">
+                                            </div>
+                                            <div style="display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 5px;">
+                                                <div style="display: flex; justify-content: flex-start; align-items: center; gap: 5px;">
+                                                <p style="font-size: 14px; font-weight: 800;">${comment.user.username}</p>
+                                                ${authorTag}
+                                                </div>
+                                                <p style="font-size: 14px;">${comment.commentMessage}</p>
+                                                <div style="display: flex; justify-content: flex-start; align-items: flex-start; gap: 8px;">
+                                                    <p style="font-size: 10px;">${comment.createdAt}</p>
+                                                    <p style="font-size: 12px; color: purple;">Replay</p>
+                                                </div>
+                                                ${replyCount}
+                                            </div>
+                                            <div>
+<!--                                                <i class="fa-regular fa-circle-dot"></i>-->
+                                                ${likeIcon}
+                                                ${likesAmount}
+                                            </div>
+                                        </div>`
+
+                    paragraphCommentsLoadArea.append(singleComment);
+                }
+
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+            });
+    }
+
+
+    //like icon
+    $(document).on('click', '.like-icon', function () {
+        const commentId = $(this).data('comment-id');
+        const currentUserId = /*[[${currentUser.id}]]*/ 'default';
+
+        fetch('/comment/like?commentId='+commentId+'&currentUserId='+currentUserId, {
+            method: 'POST',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                loadOldCommentsOfSelectedParagraph(data.paragraphId)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+    });
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
