@@ -38,5 +38,11 @@ public class Reply {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    public Reply(Comment comment, User user, String replyMessage) {
+        this.comment = comment;
+        this.user = user;
+        this.replyMessage = replyMessage;
+    }
 }
 

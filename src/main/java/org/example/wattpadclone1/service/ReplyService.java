@@ -29,4 +29,9 @@ public class ReplyService {
 
         return replyRepository.save(reply);
     }
+
+    public Reply addNewReply(Reply reply) {
+
+        return replyRepository.save(reply);
+    }
 }

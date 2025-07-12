@@ -50,7 +50,6 @@ public class ReplyController {
             ReplyLikeDTO replyLikeDTO = new ReplyLikeDTO(x.getId(),x.getComment(),x.getCommentChapter(),x.getUser(),x.getReplyMessage(),x.getLikes(),x.getCreatedAt(),isCurrentUserLiked);
             replyLikeDTOList.add(replyLikeDTO);
         }
-
         return ResponseEntity.ok(replyLikeDTOList);
     }
 
@@ -94,8 +93,24 @@ public class ReplyController {
 
 
     @PostMapping("put")
-    public void putReply(){
+    public ResponseEntity<Reply> putReply(@RequestParam String currentUserId, @RequestParam String commentId, @RequestBody Map<String,Object> body){
 
+        User currentUser = userService.getUserById(Integer.parseInt(currentUserId));
+
+        Comment comment = commentService.getCommentById(Integer.parseInt(commentId));
+
+        Reply reply = new Reply(comment,currentUser, (String) body.get("replyMessage"));
+        Reply savedReply = replyService.addNewReply(reply);
+
+        int replyCount = comment.getReplyCount();
+        replyCount++;
+        comment.setReplyCount(replyCount);
+        commentService.updateComment(comment);
+
+        if(savedReply!=null){
+            return ResponseEntity.ok(savedReply);
+        }
+        return ResponseEntity.internalServerError().body(null);
     }
 }
 

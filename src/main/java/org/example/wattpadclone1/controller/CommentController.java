@@ -122,6 +122,7 @@ public class CommentController {
         int count = 0;
         for (Comment x : commentList){
             count++;
+            count+=x.getReplyCount();
         }
 
         return ResponseEntity.ok(count);
