@@ -26,9 +26,18 @@ public class ParagraphLike {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "reply_id")
+    private Reply reply;
+
     public ParagraphLike(Comment comment, User user) {
         this.comment = comment;
         this.user = user;
+    }
+
+    public ParagraphLike(User user, Reply reply) {
+        this.user = user;
+        this.reply = reply;
     }
 }
 
