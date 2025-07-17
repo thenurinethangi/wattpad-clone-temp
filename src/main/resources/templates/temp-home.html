@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Wattpad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #ffffff;
+            color: #333;
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff6b35;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #f5f5f5;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            gap: 0.5rem;
+            width: 300px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 0.875rem;
+            width: 100%;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .btn-outline {
+            background: white;
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 16rem;
+            min-height: calc(100vh - 73px);
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            padding: 1.5rem;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            font-size: 0.875rem;
+            cursor: pointer;
+            color: #6b7280;
+            transition: color 0.2s;
+        }
+
+        .sidebar-item.active {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .sidebar-item:hover {
+            color: #333;
+        }
+
+        .sidebar-icon {
+            width: 1rem;
+            height: 1rem;
+            background: currentColor;
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 1.5rem;
+            max-width: 1000px;
+        }
+
+        .content-section {
+            margin-bottom: 2rem;
+        }
+
+        /* Pride Banner */
+        .pride-banner {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6, #3b82f6);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .pride-content h2 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .pride-content p {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .pride-btn {
+            background: white;
+            color: #8b5cf6;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* Welcome Section */
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .btn-outline-sm {
+            background: white;
+            color: #666;
+            border: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            text-decoration: none;
+        }
+
+        /* Fresh Reads */
+        .fresh-reads-banner {
+            background: linear-gradient(135deg, #14b8a6, #3b82f6);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .fresh-reads-banner h2 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .fresh-reads-banner p {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        /* Story Grid */
+        .story-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .story-card {
+            cursor: pointer;
+        }
+
+        .story-cover {
+            aspect-ratio: 3/4;
+            border-radius: 0.375rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-cover-1 { background: linear-gradient(135deg, #1e40af, #3730a3); }
+        .story-cover-2 { background: linear-gradient(135deg, #dc2626, #7c2d12); }
+        .story-cover-3 { background: linear-gradient(135deg, #059669, #065f46); }
+        .story-cover-4 { background: linear-gradient(135deg, #7c3aed, #581c87); }
+        .story-cover-5 { background: linear-gradient(135deg, #ea580c, #9a3412); }
+        .story-cover-6 { background: linear-gradient(135deg, #0891b2, #164e63); }
+
+        .story-genre {
+            position: absolute;
+            bottom: 0.5rem;
+            left: 0.5rem;
+            right: 0.5rem;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .story-info {
+            font-size: 0.875rem;
+        }
+
+        .story-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .story-author {
+            color: #6b7280;
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .story-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .stars {
+            display: flex;
+            gap: 0.125rem;
+        }
+
+        .star {
+            color: #fbbf24;
+            font-size: 0.75rem;
+        }
+
+        .rating-text {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .story-stats {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        /* Continue Reading */
+        .continue-reading {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .continue-card {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .continue-card:hover {
+            background: #f9fafb;
+        }
+
+        .continue-cover {
+            width: 4rem;
+            height: 5rem;
+            border-radius: 0.25rem;
+            flex-shrink: 0;
+        }
+
+        .continue-cover-1 { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
+        .continue-cover-2 { background: linear-gradient(135deg, #06b6d4, #3b82f6); }
+
+        .continue-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .continue-title {
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .continue-author {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .continue-progress {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.25rem;
+            background: #e5e7eb;
+            border-radius: 0.125rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #ff6b35;
+            border-radius: 0.125rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .search-box {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="nav">
+    <div class="nav-left">
+        <div class="logo">wattpad W</div>
+        <div class="nav-links">
+            <div class="nav-item">
+                <span>Browse</span>
+                <span>▼</span>
+            </div>
+            <div class="nav-item">
+                <span>Community</span>
+                <span>▼</span>
+            </div>
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" placeholder="Search">
+            </div>
+        </div>
+    </div>
+    <div class="nav-right">
+        <div class="nav-item">
+            <span>Write</span>
+            <span>▼</span>
+        </div>
+        <a href="#" class="btn btn-outline">⚡ Try Premium</a>
+        <a href="login.html">Log in</a>
+        <a href="#" class="btn btn-primary">Sign Up</a>
+    </div>
+</nav>
+
+<div class="main-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-section">
+            <h3 class="sidebar-title">Browse</h3>
+            <div class="sidebar-item active">
+                <div class="sidebar-icon"></div>
+                <span>Home</span>
+            </div>
+            <div class="sidebar-item">
+                <div class="sidebar-icon"></div>
+                <span>Reading Lists</span>
+            </div>
+            <div class="sidebar-item">
+                <div class="sidebar-icon"></div>
+                <span>History</span>
+            </div>
+            <div class="sidebar-item">
+                <div class="sidebar-icon"></div>
+                <span>Library</span>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <h3 class="sidebar-title">Write</h3>
+            <div class="sidebar-item">
+                <div class="sidebar-icon"></div>
+                <span>Create a new story</span>
+            </div>
+            <div class="sidebar-item">
+                <div class="sidebar-icon"></div>
+                <span>My Stories</span>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <h3 class="sidebar-title">Community</h3>
+            <div class="sidebar-item">
+                <div class="sidebar-icon"></div>
+                <span>Conversations</span>
+            </div>
+            <div class="sidebar-item">
+                <div class="sidebar-icon"></div>
+                <span>Following</span>
+            </div>
+            <div class="sidebar-item">
+                <div class="sidebar-icon"></div>
+                <span>Profile</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Pride Banner -->
+        <div class="pride-banner">
+            <div class="pride-content">
+                <h2>#WrittenWithPride 🏳️‍🌈</h2>
+                <p>See LGBTQ+ stories. Start reading!</p>
+            </div>
+            <a href="#" class="pride-btn">PRIDE</a>
+        </div>
+
+        <!-- Welcome Section -->
+        <div class="welcome-header">
+            <h1 class="welcome-title">Welcome home!</h1>
+            <a href="#" class="btn-outline-sm">Content Preferences</a>
+        </div>
+
+        <!-- Fresh Reads -->
+        <div class="content-section">
+            <div class="fresh-reads-banner">
+                <h2>Fresh Reads</h2>
+                <p>Undiscovered stories</p>
+            </div>
+
+            <h3 class="section-title">Made for wattpadusername</h3>
+            <p class="section-subtitle">Based on your reading history with us</p>
+
+            <div class="story-grid">
+                <div class="story-card">
+                    <div class="story-cover story-cover-1">
+                        <div class="story-genre">DARK ROMANCE</div>
+                    </div>
+                    <div class="story-info">
+                        <div class="story-title">The Mafia's Angel</div>
+                        <div class="story-author">by AuthorName1</div>
+                        <div class="story-rating">
+                            <div class="stars">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                            <span class="rating-text">4.8</span>
+                        </div>
+                        <div class="story-stats">1.2M reads • 45.3K votes</div>
+                    </div>
+                </div>
+
+                <div class="story-card">
+                    <div class="story-cover story-cover-2">
+                        <div class="story-genre">WEREWOLF</div>
+                    </div>
+                    <div class="story-info">
+                        <div class="story-title">Alpha's Mate</div>
+                        <div class="story-author">by AuthorName2</div>
+                        <div class="story-rating">
+                            <div class="stars">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                            <span class="rating-text">4.9</span>
+                        </div>
+                        <div class="story-stats">856K reads • 32.1K votes</div>
+                    </div>
+                </div>
+
+                <div class="story-card">
+                    <div class="story-cover story-cover-3">
+                        <div class="story-genre">TEEN FICTION</div>
+                    </div>
+                    <div class="story-info">
+                        <div class="story-title">Summer Love</div>
+                        <div class="story-author">by AuthorName3</div>
+                        <div class="story-rating">
+                            <div class="stars">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                            <span class="rating-text">4.7</span>
+                        </div>
+                        <div class="story-stats">642K reads • 28.5K votes</div>
+                    </div>
+                </div>
+
+                <div class="story-card">
+                    <div class="story-cover story-cover-4">
+                        <div class="story-genre">ROMANCE</div>
+                    </div>
+                    <div class="story-info">
+                        <div class="story-title">Forbidden Love</div>
+                        <div class="story-author">by AuthorName4</div>
+                        <div class="story-rating">
+                            <div class="stars">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">☆</span>
+                            </div>
+                            <span class="rating-text">4.6</span>
+                        </div>
+                        <div class="story-stats">789K reads • 35.2K votes</div>
+                    </div>
+                </div>
+
+                <div class="story-card">
+                    <div class="story-cover story-cover-5">
+                        <div class="story-genre">FANTASY</div>
+                    </div>
+                    <div class="story-info">
+                        <div class="story-title">Dragon's Heart</div>
+                        <div class="story-author">by AuthorName5</div>
+                        <div class="story-rating">
+                            <div class="stars">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                            </div>
+                            <span class="rating-text">4.9</span>
+                        </div>
+                        <div class="story-stats">934K reads • 41.7K votes</div>
+                    </div>
+                </div>
+
+                <div class="story-card">
+                    <div class="story-cover story-cover-6">
+                        <div class="story-genre">THE END OF WAR</div>
+                    </div>
+                    <div class="story-info">
+                        <div class="story-title">Final Battle</div>
+                        <div class="story-author">by AuthorName6</div>
+                        <div class="story-rating">
+                            <div class="stars">
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">★</span>
+                                <span class="star">☆</span>
+                            </div>
+                            <span class="rating-text">4.5</span>
+                        </div>
+                        <div class="story-stats">567K reads • 23.8K votes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Continue Reading -->
+        <div class="content-section">
+            <h3 class="section-title">Continue Reading</h3>
+            <div class="continue-reading">
+                <div class="continue-card">
+                    <div class="continue-cover continue-cover-1"></div>
+                    <div class="continue-info">
+                        <div class="continue-title">The Bad Boy's Girl</div>
+                        <div class="continue-author">by AuthorName</div>
+                        <div class="continue-progress">Chapter 12 • 67% complete</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 67%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="continue-card">
+                    <div class="continue-cover continue-cover-2"></div>
+                    <div class="continue-info">
+                        <div class="continue-title">Midnight Secrets</div>
+                        <div class="continue-author">by AuthorName</div>
+                        <div class="continue-progress">Chapter 8 • 43% complete</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 43%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
